@@ -1,11 +1,11 @@
-import { View, Text , ScrollView, Image, Alert} from 'react-native';
+import { View, Text , ScrollView,StyleSheet, Image, Alert} from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import React,{useState} from 'react';
 
 const signup = () => {
   return (
     <SafeAreaView>
-        <ScrollView>
+        <ScrollView style={Styles.mainContainer}>
             <View>
                 <Text>signup</Text>
             </View>
@@ -15,3 +15,10 @@ const signup = () => {
 }
 
 export default signup;
+
+const Styles = StyleSheet.create({
+  mainContainer:{
+    flex:1,
+    backgroundColor:'#f2f2f2',
+  }
+})
