@@ -1,5 +1,6 @@
 import { View, Text, TextInput, Pressable,TouchableOpacity, StyleSheet,Image } from "react-native";
 import React, { useState } from "react";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const eye = require('../assets/images/Eye.png'); 
 const invisible = require('../assets/images/Invisible.png');
@@ -25,10 +26,11 @@ const FormField = ({
             <TouchableOpacity
             style={styles.eyeIcon}
             onPress={() => setShowPassword(!showPassword)} >
-            <Text
-              style={styles.iconImage}
-              resizeMode="contain"
-            > {showPassword ? "Show" : "Hide"}</Text>
+            <Icon
+              name={showPassword ? "visibility" : "visibility-off"} 
+              size={24}
+              color="#7B7B8B"
+            /> 
           </TouchableOpacity>
           )}
         </View>
@@ -41,6 +43,7 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         alignItems: 'center',
+        fontFamily:'MontserratLight',
     },
     cell: {
         marginTop: 4,
@@ -60,10 +63,5 @@ const styles = StyleSheet.create({
         right: 50,              // Position the icon on the right inside the input field
         top: '50%',
         transform: [{ translateY: -20 }], 
-  },
-    iconImage: {
-        width: 24,             // Size of the icon
-        height: 24,
-        tintColor: '#7B7B8B',
-  },
+  }
 })

@@ -1,6 +1,6 @@
 import { Text, Pressable , StyleSheet,View} from "react-native";
 
-const SignupButton = ({label,onPress}) => {
+const SigninButton = ({label,onPress}) => {
 
   return (
     <View style={styles.buttonContainer}>
@@ -10,20 +10,21 @@ const SignupButton = ({label,onPress}) => {
     </View>
   );
 };
-export default SignupButton;
+
+export default SigninButton;
 
 const styles = StyleSheet.create({
     buttonContainer:{
         flex:1,
         justifyContent:'center',
         alignItems:'center',
-        marginTop:10,
-        marginBottom:10,
+        marginTop:40,
+        marginBottom:0,
     },
     button: {   
         width: 120,
         backgroundColor:'#fef100',
-        borderRadius: 10,
+        borderRadius: 6,
         alignContent:'center',
         justifyContent:'center',
         borderColor: '#c5ba00', 
@@ -33,5 +34,6 @@ const styles = StyleSheet.create({
         fontSize:16,
         padding:8,
         textAlign:'center',
+        fontFamily:'MontserratLight',
     },
 })
