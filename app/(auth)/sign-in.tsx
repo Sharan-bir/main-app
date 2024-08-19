@@ -6,7 +6,7 @@ import { Link } from 'expo-router';
 const SignIn = () => {
   return (
     <SafeAreaView>
-      <Text>SignIn</Text>
+      <Text className='text-xl'> SignIn</Text>
       <Link
         href="/(root)/(tabs)/home"
       >
