@@ -1,12 +1,20 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-
-const _layout = () => {
+import { View, Text } from 'react-native';
+import React from 'react';
+import {Drawer} from 'expo-router/drawer';
+ 
+const ScreenLayout = () => {
   return (
-    <View>
-      <Text>_layout</Text>
-    </View>
+    <>
+      <Drawer>
+        <Drawer.Screen
+          name="index"
+          options={{ title: "Home", headerShown: true }}
+        />
+        <Drawer.Screen name="eventitem" options={{ title: "Event Items" }} />
+        <Drawer.Screen name="eventdetail" options={{ title: "Event Detail" }} />
+      </Drawer>
+    </>
   )
 }
 
-export default _layout
+export default ScreenLayout;
