@@ -13,10 +13,10 @@ const TabLayout = () => {
   };
   return (
     <>
-      <Drawer>
-        <Drawer.Screen name="index" options={{ headerShown: false }} />
+      <Drawer screenOptions={{ headerShadowVisible: false }}>
+        {/* <Drawer.Screen name="(menu)"/> */}
         <Drawer.Screen
-          name="home"
+          name="(menu)"
           options={{
             headerLeft: () => (
               <Image
@@ -27,7 +27,7 @@ const TabLayout = () => {
             headerRight: () => {
               return (
                 <TouchableOpacity
-                className="absolute top-0 right-0 p-4"
+                  className="absolute top-0 right-0 p-4"
                   onPress={() => {
                     onToggle();
                   }}
@@ -39,7 +39,6 @@ const TabLayout = () => {
             headerTitle: () => {
               return (
                 <View className="ml-10">
-                  <Text>Hellos</Text>
                   <Text className="text-2xl font-bold">Home</Text>
                 </View>
               );
@@ -47,6 +46,8 @@ const TabLayout = () => {
             headerShown: true,
           }}
         />
+        <Drawer.Screen name="event-items" options={{ headerShown: false }} />
+        <Drawer.Screen name="event-details" options={{ headerShown: false }} />
       </Drawer>
     </>
   );

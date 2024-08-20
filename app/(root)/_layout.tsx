@@ -7,5 +7,5 @@ const RootLayout = () => {
     </Stack>
   );
 };
-
 export default RootLayout;
+

@@ -1,12 +1,13 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const Index = () => {
+const EventItemsContent = () => {
+    
   return (
     <View>
-      <Text>Index</Text>
+      <Text>EventItemsContent</Text>
     </View>
   )
 }
 
-export default Index
+export default EventItemsContent
