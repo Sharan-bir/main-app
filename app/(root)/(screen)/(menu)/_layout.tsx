@@ -7,6 +7,7 @@ import {
   import { withLayoutContext } from "expo-router";
   import { ParamListBase, TabNavigationState } from "@react-navigation/native";
   import React from "react";
+import Notification from "@/components/Notification";
   
   const { Navigator } = createMaterialTopTabNavigator();
   
@@ -23,14 +24,16 @@ import {
       <View style={{backgroundColor:"white",borderTopWidth:1,borderTopColor:"grey"}}>
         <View style={styles.container}>
           <View style={styles.container2}>
-            <Text>Hellos</Text>
+           <Notification/>
           </View>
         </View>
-        </View>
-        <MaterialTopTabs>
-          <MaterialTopTabs.Screen name="eventitem"  />
-          <MaterialTopTabs.Screen name="eventdetail"  />
-        </MaterialTopTabs>
+      </View>
+      
+      <MaterialTopTabs screenOptions={{ tabBarActiveTintColor: '#000', tabBarIndicatorStyle: {
+            backgroundColor: '#000'},}}>
+          <MaterialTopTabs.Screen name="eventitem" options={{ title: 'Event Items' }} />
+          <MaterialTopTabs.Screen name="eventdetail" options={{ title: 'Event Details' }}   />
+      </MaterialTopTabs>
       </>
     );
   };
@@ -41,16 +44,18 @@ import {
     {
         container:{
           flex:0,
-          margin:15,
+          marginTop:15,
+          marginBottom:10,
+          marginLeft:5,
+          marginRight:5,
           justifyContent:'center',
           alignItems:'center',
         },
         container2:{
             width:"95%",
-            padding:8,
             backgroundColor:"#C7F9FF",
             borderWidth:1,
-            borderRadius:8,
+            borderRadius:4,
             borderColor:"#0195B5",
             height:100,
         }

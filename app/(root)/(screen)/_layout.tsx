@@ -40,8 +40,9 @@ const DrawerLayout = () => {
     <>
       <Drawer drawerContent={CustomDrawer}
         screenOptions={{
-          drawerActiveBackgroundColor:'white',
           drawerStyle: { width: "100%"},
+          drawerPosition: 'right',
+          drawerActiveBackgroundColor:'#C7F9FF',
           headerShadowVisible: false,
           drawerLabelStyle: {
             fontSize: 18,
@@ -101,12 +102,12 @@ const DrawerLayout = () => {
           }}
         />
 
-        <Drawer.Screen name="eventitem" options={{ headerShown: false,
+        <Drawer.Screen name="eventitem" options={{ headerShown: true,
         drawerLabel: () => <CustomDrawerLabel title="Event Items" subTitle="Manage your Items" />,drawerIcon: () => (
              <Ionicons name="cart-outline" size={24} color="black" />
             ),}} />
 
-        <Drawer.Screen name="eventdetail" options={{ headerShown: false ,
+        <Drawer.Screen name="eventdetail" options={{ headerShown: true ,
         drawerLabel: () => <CustomDrawerLabel title="Event Details" subTitle="Manage your Items" />,
         drawerIcon: () => ( <Feather name="sunset" size={24} color="black" />  ),}}/>
 

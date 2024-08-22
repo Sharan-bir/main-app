@@ -1,11 +1,28 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
+import { View, StyleSheet, Image } from 'react-native'
+import React, { useState } from 'react'
+import { images } from '@/constants';
+import AddButton from '@/components/AddButton';
+import SearchBar from '@/components/SearchBar';
 
 const eventdetail = () => {
+  const [search,setSearch] = useState('');
   return (
+    <>
+    <SearchBar
+      value={search}
+      placeholder="Search Events by name"
+      handleChangeText={(e:any) => setSearch(e)}
+      customWidth="auto"
+      />
+
     <View style={styles.container}>
-      <Text>Event Details</Text>
+      <Image
+        source={images.boxGif}
+        style={styles.gif}
+      />
+      <AddButton label="Add Details"/>
     </View>
+    </>
   )
 }
 
@@ -16,5 +33,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop:40,
+  },
+  gif: {
+    width: 200,
+    height: 200,
   },
 });

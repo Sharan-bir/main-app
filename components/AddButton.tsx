@@ -18,8 +18,7 @@ const styles = StyleSheet.create({
         flex:1,
         justifyContent:'center',
         alignItems:'center',
-        marginTop:40,
-        marginBottom:0,
+        marginTop:20,
     },
     button: {   
         width: 120,
