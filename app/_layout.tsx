@@ -21,7 +21,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    MontserratLight: require("../assets/fonts/MontserratLight.ttf"),
     ...FontAwesome.font,
   });
 
@@ -48,6 +48,7 @@ function RootLayoutNav() {
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      <Stack.Screen name="(root)" options={{ headerShown: false }} />
       <Stack.Screen name="+not-found" />
     </Stack>
   );
