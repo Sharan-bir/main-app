@@ -106,9 +106,9 @@ const DrawerLayout = () => {
              <Ionicons name="cart-outline" size={24} color="black" />
             ),}} />
 
-        <Drawer.Screen name="eventdetail" options={{ headerShown: false ,drawerLabel: () => <CustomDrawerLabel title="Event Details" subTitle="Manage your Items" />,drawerIcon: () => (
-             <Feather name="sunset" size={24} color="black" />
-            ),}}/>
+        <Drawer.Screen name="eventdetail" options={{ headerShown: false ,
+        drawerLabel: () => <CustomDrawerLabel title="Event Details" subTitle="Manage your Items" />,
+        drawerIcon: () => ( <Feather name="sunset" size={24} color="black" />  ),}}/>
 
       </Drawer>
     </>
