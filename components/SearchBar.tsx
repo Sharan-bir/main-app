@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     },
     Icon: {
         position: 'absolute',
-        right: 355,              // Position the icon on the right inside the input field
+        left: 20,              // Position the icon on the right inside the input field
         transform: [{ translateY: 34 }], 
   }
 })

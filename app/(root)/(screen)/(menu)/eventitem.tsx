@@ -55,12 +55,12 @@ const styles = StyleSheet.create({
   },
   share:{
     position:'absolute',
-    marginTop:30,
-    right:80,
+    marginTop:28,
+    right:70,
   },
   clipboard:{
     position:'absolute',
-    marginTop:30,
+    marginTop:28,
     right:30,
   }
 

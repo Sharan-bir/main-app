@@ -80,7 +80,7 @@ const DrawerLayout = () => {
                         </TouchableOpacity>
                     </View>
 
-                  <TouchableOpacity onPress={() => { onBellPress();}} style={{ marginRight: 15 }} >
+                  <TouchableOpacity onPress={() => { onBellPress();}} style={{ marginRight: 1 }} >
                     <View style={{ position: 'relative' }}>
                         <Image style={style.iconSize} source={images.Bell} />
                         <View style={style.circle} >
@@ -91,7 +91,7 @@ const DrawerLayout = () => {
                     </View>
                   </TouchableOpacity>
 
-                  <TouchableOpacity onPress={() => { onToggle();}}  style={{ marginRight: 15 }} > 
+                  <TouchableOpacity onPress={() => { onToggle();}}  style={{ padding: 15}} > 
                     <Image style={style.iconSize} source={images.hamBurger} />
                   </TouchableOpacity>
 
