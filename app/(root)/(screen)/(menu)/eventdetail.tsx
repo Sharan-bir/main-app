@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image } from 'react-native'
+import { View, StyleSheet, Image, Text } from 'react-native'
 import React, { useState } from 'react'
 import { images } from '@/constants';
 import AddButton from '@/components/AddButton';
@@ -14,6 +14,11 @@ const eventdetail = () => {
       handleChangeText={(e:any) => setSearch(e)}
       customWidth="auto"
       />
+      <View style={styles.heading}>
+        <Text style={styles.headingText}>
+          All events
+        </Text>
+      </View>
 
     <View style={styles.container}>
       <Image
@@ -39,4 +44,14 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
   },
+  heading:{
+    backgroundColor:'#f0f0f0',
+    padding:15,
+    borderBottomWidth:0.6,
+  },
+  headingText:{
+    fontSize:16,
+    fontFamily:'MontserratLight',
+    fontWeight:"bold",
+  }
 });

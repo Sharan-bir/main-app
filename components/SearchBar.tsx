@@ -38,12 +38,13 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         fontFamily:'MontserratLight',
+        maxHeight:60,
     },
     cell: {
         marginTop: 20,
         marginLeft:10,
         marginRight:10,
-        marginBottom: 4,
+        marginBottom: 0,
         borderWidth: 0.5,         
         borderColor: '#000', 
         borderRadius: 4,        
