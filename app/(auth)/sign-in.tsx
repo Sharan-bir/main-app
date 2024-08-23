@@ -23,13 +23,15 @@ const Signin = () => {
     // phoneNumber: "",
   });
 
-  const { mutate: getToken } = useGetToken();
+  const { mutate: getAuthorized } = useGetToken();
   const handleForgotPassword = () => {
     Alert.alert(
       "Forgot Password",
       "Please check your email for password reset link"
     );
   };
+
+
 
   const submit = async () => {
     if (!form.email || !form.password) {
@@ -43,15 +45,15 @@ const Signin = () => {
         // form.phoneNumber,
       );
 
-      getToken(
+      getAuthorized(
         {
           username: form.email,
           password: form.password,
         },
         {
-          onSuccess: (e: any) => {
-            console.log(e.id_token);
-          },
+          onSuccess: (e) => {
+            console.log(e)
+          }
         }
       );
       setForm({ ...form, email: "", password: "" });
