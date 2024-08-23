@@ -6,7 +6,7 @@ import { Link } from "expo-router";
 const Home = () => {
   return (
     <SafeAreaView >
-      <Link href="/(root)/(screen)/(menu)/eventitem" >
+      <Link href="/(auth)/sign-in" >
         <Text>Go to home screen!</Text>
       </Link>
     </SafeAreaView>
