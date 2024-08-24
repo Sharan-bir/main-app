@@ -15,13 +15,17 @@ import SigninButton from "@/components/SigninButton";
 import LinkButton from "@/components/LinkButton";
 import { images } from "@/constants";
 import { useGetToken } from "@/api/useGetToken";
+import { useRouter } from "expo-router";
 
 const Signin = () => {
+  const router = useRouter()
   const [form, setForm] = React.useState({
     password: "",
     email: "",
     // phoneNumber: "",
   });
+
+
 
   const { mutate: getAuthorized } = useGetToken();
   const handleForgotPassword = () => {
@@ -30,8 +34,6 @@ const Signin = () => {
       "Please check your email for password reset link"
     );
   };
-
-
 
   const submit = async () => {
     if (!form.email || !form.password) {
@@ -52,8 +54,13 @@ const Signin = () => {
         },
         {
           onSuccess: (e) => {
-            console.log(e)
-          }
+            console.log(e);
+            router.replace("/(menu)/eventdetail")
+
+          },
+          onError: (e) => {
+            console.log(e);
+          },
         }
       );
       setForm({ ...form, email: "", password: "" });
