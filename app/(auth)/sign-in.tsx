@@ -14,18 +14,22 @@ import FormField from "@/components/FormField";
 import SigninButton from "@/components/SigninButton";
 import LinkButton from "@/components/LinkButton";
 import { images } from "@/constants";
+import { useGetToken } from "@/api/Loginapi";
 
 const Signin = () => {
- 
   const [form, setForm] = React.useState({
     password: "",
     email: "",
     phoneNumber: "",
   });
 
-  const handleForgotPassword = ()=> {
-    Alert.alert("Forgot Password", "Please check your email for password reset link");
-  }
+  const handleForgotPassword = () => {
+    Alert.alert(
+      "Forgot Password",
+      "Please check your email for password reset link"
+    );
+  };
+  const { mutate: getToken } = useGetToken();
 
   const submit = async () => {
     if (!form.email || !form.password) {
@@ -33,12 +37,32 @@ const Signin = () => {
     }
 
     try {
-      console.log(
-        form.email,
-        form.phoneNumber,
-      );
-      setForm({...form,phoneNumber:'',email:'',password:''});
+      console.log(form.email, form.password);
+      getToken(
+        {
+          username: form.email,
+          password: form.password,
+        },
+        {
+          onSuccess: (data: any) => {
+            console.log("Token:", data.jwtToken);
 
+            const token = data.jwtToken;
+
+            if (token != undefined) {
+              Alert.alert("Success", "You LoggedIn !!");
+            }
+            setForm({ ...form, email: "", password: "" });
+          },
+          onError: (error: any) => {
+            console.error("Error during authentication:", error);
+            Alert.alert(
+              "Authentication Error",
+              error.message || "An error occurred"
+            );
+          },
+        }
+      );
       // api logic goes here
     } catch (error) {
       console.log("Error!!");
@@ -49,52 +73,47 @@ const Signin = () => {
     <SafeAreaView>
       <ScrollView>
         <ImageBackground source={images.background}>
-
           <View style={Styles.container}>
             <View style={Styles.imagecontainer}>
               <Image source={images.mainLogo} style={Styles.image} />
             </View>
 
             <View style={Styles.formcontainer}>
-              
               <FormField
                 title="Email"
                 value={form.email}
                 placeholder="Email"
-                handleChangeText={(e:any) => setForm({ ...form, email: e })}
+                handleChangeText={(e: any) => setForm({ ...form, email: e })}
               />
-              
+
               <FormField
                 title="phoneNumber"
                 value={form.phoneNumber}
                 placeholder="Phone Number"
-                handleChangeText={(e:any) => setForm({ ...form, phoneNumber: e })}
+                handleChangeText={(e: any) =>
+                  setForm({ ...form, phoneNumber: e })
+                }
               />
 
               <FormField
                 title="Password"
                 value={form.password}
                 placeholder="Password"
-                handleChangeText={(e:any) => setForm({ ...form, password: e })}
+                handleChangeText={(e: any) => setForm({ ...form, password: e })}
               />
 
               <TouchableOpacity onPress={handleForgotPassword}>
-                  <Text style={Styles.textright}>Forgot Password?</Text>
+                <Text style={Styles.textright}>Forgot Password?</Text>
               </TouchableOpacity>
 
-              <SigninButton
-                label="Sign In"
-                onPress={submit}
-              />
-            
-            <Text style={Styles.textcenter}>New to EventExperts?</Text>
+              <SigninButton label="Sign In" onPress={submit} />
 
-             
-            <LinkButton
+              <Text style={Styles.textcenter}>New to EventExperts?</Text>
+
+              <LinkButton
                 label="Create your EventExperts account"
                 onPress={{}}
               />
-
             </View>
           </View>
         </ImageBackground>
@@ -130,14 +149,14 @@ const Styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 50,
   },
-  textright:{
-    textAlign:'right',
-    right: 40,  
-    color: '#007AFF',  
+  textright: {
+    textAlign: "right",
+    right: 40,
+    color: "#007AFF",
   },
-  textcenter:{
-    textAlign:'center',
+  textcenter: {
+    textAlign: "center",
     marginBottom: 10,
-    marginTop:10,
+    marginTop: 10,
   },
 });

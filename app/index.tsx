@@ -1,7 +1,7 @@
-import {Redirect} from "expo-router";
+import { Redirect } from "expo-router";
 
 const index = () => {
-  return <Redirect href="/(root)/(screen)/(menu)/eventitem"  />
-}
+  return <Redirect href="/(auth)/sign-up" />;
+};
 
 export default index;

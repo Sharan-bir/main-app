@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   ImageBackground,
   ScrollView,
   StyleSheet,
@@ -12,31 +11,59 @@ import React, { useState } from "react";
 import FormField from "@/components/FormField";
 import SignupButton from "@/components/SignupButton";
 import { images } from "@/constants";
+import { useCreateUser } from "@/api/signup";
 
 const Signup = () => {
- 
   const [form, setForm] = React.useState({
-    username: "",
+    firstName: "",
+    lastName: "",
     password: "",
-    email: "",
-    companyName: "",
-    confirmPassword: "",
+    emailId: "",
+    emEventOrg: "",
+    matchingPassword: "",
     phoneNumber: "",
   });
 
   const submit = async () => {
-    if (!form.username || !form.password || !form.phoneNumber) {
+    if (!form.firstName || !form.password || !form.phoneNumber) {
       Alert.alert("Error", "Please fill in all fields");
     }
 
+    const { mutate: getToken } = useCreateUser();
+
     try {
-      console.log(
-        form.username,
-        form.email,
-        form.phoneNumber,
-        form.companyName
-      );
+      console.log(form.emailId, form.phoneNumber, form.emEventOrg);
       // api logic goes here
+      getToken(
+        {
+          firstName: form.firstName,
+          password: form.password,
+          lastName: form.lastName,
+          emailId: form.emailId,
+          phoneNumber: form.phoneNumber,
+          matchingPassword: form.matchingPassword,
+          emEventOrg: form.emEventOrg,
+        },
+        {
+          onSuccess: (data: any) => {
+            console.log("Token:", data.statuscode);
+
+            const token = data.statuscode;
+
+            if (token) {
+              Alert.alert("Success", "You LoggedIn !!");
+            }
+            setForm({ ...form, emailId: "", password: "" });
+          },
+          onError: (error: any) => {
+            console.error("Error during authentication:", error);
+            Alert.alert(
+              "Authentication Error",
+              error.message || "An error occurred"
+            );
+          },
+        }
+      );
     } catch (error) {
       console.log("Error!!");
     }
@@ -46,7 +73,6 @@ const Signup = () => {
     <SafeAreaView>
       <ScrollView>
         <ImageBackground source={images.background}>
-
           <View style={Styles.container}>
             <View style={Styles.imagecontainer}>
               <Image source={images.mainLogo} style={Styles.image} />
@@ -54,51 +80,63 @@ const Signup = () => {
 
             <View style={Styles.formcontainer}>
               <FormField
-                title="Username"
-                value={form.username}
-                placeholder="Username"
-                handleChangeText={(e:any) => setForm({ ...form, username: e })}
+                title="firstName"
+                value={form.firstName}
+                placeholder="First Name"
+                handleChangeText={(e: any) =>
+                  setForm({ ...form, firstName: e })
+                }
+              />
+
+              <FormField
+                title="lastName"
+                value={form.lastName}
+                placeholder="Last Name"
+                handleChangeText={(e: any) => setForm({ ...form, lastName: e })}
               />
 
               <FormField
                 title="Email"
-                value={form.email}
+                value={form.emailId}
                 placeholder="Email"
-                handleChangeText={(e:any) => setForm({ ...form, email: e })}
+                handleChangeText={(e: any) => setForm({ ...form, emailId: e })}
               />
 
               <FormField
                 title="phoneNumber"
                 value={form.phoneNumber}
                 placeholder="Phone Number"
-                handleChangeText={(e:any) => setForm({ ...form, phoneNumber: e })}
+                handleChangeText={(e: any) =>
+                  setForm({ ...form, phoneNumber: e })
+                }
               />
 
               <FormField
                 title="companyName"
-                value={form.companyName}
+                value={form.emEventOrg}
                 placeholder="Company Name"
-                handleChangeText={(e:any) => setForm({ ...form, companyName: e })}
+                handleChangeText={(e: any) =>
+                  setForm({ ...form, emEventOrg: e })
+                }
               />
 
               <FormField
                 title="Password"
                 value={form.password}
                 placeholder="Password"
-                handleChangeText={(e:any) => setForm({ ...form, password: e })}
+                handleChangeText={(e: any) => setForm({ ...form, password: e })}
               />
 
               <FormField
                 title="Password"
-                value={form.confirmPassword}
+                value={form.matchingPassword}
                 placeholder="Confirm Password"
-                handleChangeText={(e:any) => setForm({ ...form, confirmPassword: e })}
+                handleChangeText={(e: any) =>
+                  setForm({ ...form, matchingPassword: e })
+                }
               />
 
-              <SignupButton
-                label="Sign Up"
-                onPress={submit}
-              />
+              <SignupButton label="Sign Up" onPress={submit} />
             </View>
           </View>
         </ImageBackground>
@@ -133,5 +171,5 @@ const Styles = StyleSheet.create({
     zIndex: 5,
     borderRadius: 10,
     marginBottom: 50,
-  }
+  },
 });

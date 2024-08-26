@@ -3,7 +3,7 @@ import {
     MaterialTopTabNavigationOptions,
     MaterialTopTabNavigationEventMap,
   } from "@react-navigation/material-top-tabs";
-  import { Text, View , StyleSheet} from "react-native";
+  import { View , StyleSheet} from "react-native";
   import { withLayoutContext } from "expo-router";
   import { ParamListBase, TabNavigationState } from "@react-navigation/native";
   import React from "react";
