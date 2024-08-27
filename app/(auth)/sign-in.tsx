@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   Image,
-  TouchableOpacity,
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,20 +14,16 @@ import SigninButton from "@/components/SigninButton";
 import LinkButton from "@/components/LinkButton";
 import { images } from "@/constants";
 import { useGetToken } from "@/api/Loginapi";
+import { useRouter } from "expo-router";
 
 const Signin = () => {
-  const [form, setForm] = React.useState({
+  const [form, setForm] = useState({
     password: "",
     email: "",
-    phoneNumber: "",
   });
 
-  const handleForgotPassword = () => {
-    Alert.alert(
-      "Forgot Password",
-      "Please check your email for password reset link"
-    );
-  };
+  const router = useRouter();
+
   const { mutate: getToken } = useGetToken();
 
   const submit = async () => {
@@ -38,6 +33,7 @@ const Signin = () => {
 
     try {
       console.log(form.email, form.password);
+
       getToken(
         {
           username: form.email,
@@ -49,13 +45,14 @@ const Signin = () => {
 
             const token = data.jwtToken;
 
-            if (token != undefined) {
-              Alert.alert("Success", "You LoggedIn !!");
+            if (token) {
+              router.replace("/(root)/(menu)/eventitem");
             }
             setForm({ ...form, email: "", password: "" });
           },
           onError: (error: any) => {
             console.error("Error during authentication:", error);
+
             Alert.alert(
               "Authentication Error",
               error.message || "An error occurred"
@@ -63,7 +60,6 @@ const Signin = () => {
           },
         }
       );
-      // api logic goes here
     } catch (error) {
       console.log("Error!!");
     }
@@ -72,7 +68,10 @@ const Signin = () => {
   return (
     <SafeAreaView>
       <ScrollView>
-        <ImageBackground source={images.background}>
+        <ImageBackground
+          source={images.background}
+          style={Styles.BackgroundImg}
+        >
           <View style={Styles.container}>
             <View style={Styles.imagecontainer}>
               <Image source={images.mainLogo} style={Styles.image} />
@@ -82,17 +81,8 @@ const Signin = () => {
               <FormField
                 title="Email"
                 value={form.email}
-                placeholder="Email"
+                placeholder="Email or Phone Number"
                 handleChangeText={(e: any) => setForm({ ...form, email: e })}
-              />
-
-              <FormField
-                title="phoneNumber"
-                value={form.phoneNumber}
-                placeholder="Phone Number"
-                handleChangeText={(e: any) =>
-                  setForm({ ...form, phoneNumber: e })
-                }
               />
 
               <FormField
@@ -102,9 +92,9 @@ const Signin = () => {
                 handleChangeText={(e: any) => setForm({ ...form, password: e })}
               />
 
-              <TouchableOpacity onPress={handleForgotPassword}>
+              {/* <TouchableOpacity onPress={handleForgotPassword}>
                 <Text style={Styles.textright}>Forgot Password?</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               <SigninButton label="Sign In" onPress={submit} />
 
@@ -113,6 +103,7 @@ const Signin = () => {
               <LinkButton
                 label="Create your EventExperts account"
                 onPress={{}}
+                linkPage="/(auth)/sign-up/"
               />
             </View>
           </View>
@@ -129,8 +120,14 @@ const Styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
   },
+  BackgroundImg: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
   imagecontainer: {
-    paddingTop: 40,
+    paddingTop: 100,
     position: "absolute",
     zIndex: 10,
   },
@@ -140,20 +137,20 @@ const Styles = StyleSheet.create({
     borderRadius: 4,
   },
   formcontainer: {
-    marginTop: 110,
+    marginTop: 170,
     paddingTop: 90,
     width: "90%",
-    height: 550,
+    height: 480,
     backgroundColor: "white",
     zIndex: 5,
     borderRadius: 10,
-    marginBottom: 50,
+    marginBottom: 200,
   },
-  textright: {
-    textAlign: "right",
-    right: 40,
-    color: "#007AFF",
-  },
+  // textright: {
+  //   textAlign: "right",
+  //   right: 40,
+  //   color: "#007AFF",
+  // },
   textcenter: {
     textAlign: "center",
     marginBottom: 10,

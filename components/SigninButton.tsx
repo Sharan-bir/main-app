@@ -1,7 +1,6 @@
-import { Text, Pressable , StyleSheet,View} from "react-native";
+import { Text, Pressable, StyleSheet, View } from "react-native";
 
-const SigninButton = ({label,onPress}:any) => {
-
+const SigninButton = ({ label, onPress }: any) => {
   return (
     <View style={styles.buttonContainer}>
       <Pressable style={styles.button} onPress={onPress}>
@@ -14,26 +13,26 @@ const SigninButton = ({label,onPress}:any) => {
 export default SigninButton;
 
 const styles = StyleSheet.create({
-    buttonContainer:{
-        flex:1,
-        justifyContent:'center',
-        alignItems:'center',
-        marginTop:40,
-        marginBottom:0,
-    },
-    button: {   
-        width: 120,
-        backgroundColor:'#fef100',
-        borderRadius: 6,
-        alignContent:'center',
-        justifyContent:'center',
-        borderColor: '#c5ba00', 
-        borderWidth: 1,  
-    },
-    text:{
-        fontSize:16,
-        padding:8,
-        textAlign:'center',
-        fontFamily:'MontserratLight',
-    },
-})
+  buttonContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  button: {
+    width: 120,
+    backgroundColor: "#fef100",
+    borderRadius: 6,
+    alignContent: "center",
+    justifyContent: "center",
+    borderColor: "#c5ba00",
+    borderWidth: 1,
+  },
+  text: {
+    fontSize: 16,
+    padding: 8,
+    textAlign: "center",
+    fontFamily: "MontserratMedium",
+  },
+});

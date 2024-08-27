@@ -4,6 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   Image,
+  Text,
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,9 +13,10 @@ import FormField from "@/components/FormField";
 import SignupButton from "@/components/SignupButton";
 import { images } from "@/constants";
 import { useCreateUser } from "@/api/signup";
+import LinkButton from "@/components/LinkButton";
 
 const Signup = () => {
-  const [form, setForm] = React.useState({
+  const [form, setForm] = useState({
     firstName: "",
     lastName: "",
     password: "",
@@ -25,16 +27,24 @@ const Signup = () => {
   });
 
   const submit = async () => {
-    if (!form.firstName || !form.password || !form.phoneNumber) {
+    if (
+      !form.firstName ||
+      !form.lastName ||
+      !form.emailId ||
+      !form.matchingPassword ||
+      !form.emEventOrg ||
+      !form.password ||
+      !form.phoneNumber
+    ) {
       Alert.alert("Error", "Please fill in all fields");
     }
 
-    const { mutate: getToken } = useCreateUser();
+    const { mutate: createUser } = useCreateUser();
 
     try {
       console.log(form.emailId, form.phoneNumber, form.emEventOrg);
       // api logic goes here
-      getToken(
+      createUser(
         {
           firstName: form.firstName,
           password: form.password,
@@ -137,6 +147,14 @@ const Signup = () => {
               />
 
               <SignupButton label="Sign Up" onPress={submit} />
+
+              <Text style={Styles.textcenter}>Already Have Account?</Text>
+
+              <LinkButton
+                label="Back to LogIn"
+                onPress={{}}
+                linkPage="/(auth)/sign-in/"
+              />
             </View>
           </View>
         </ImageBackground>
@@ -166,10 +184,15 @@ const Styles = StyleSheet.create({
     marginTop: 110,
     paddingTop: 90,
     width: "90%",
-    height: 550,
+    height: 750,
     backgroundColor: "white",
     zIndex: 5,
     borderRadius: 10,
     marginBottom: 50,
+  },
+  textcenter: {
+    textAlign: "center",
+    marginBottom: 5,
+    marginTop: 10,
   },
 });
