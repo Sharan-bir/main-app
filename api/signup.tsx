@@ -10,6 +10,9 @@ type Variables = {
   phoneNumber: string;
   matchingPassword: string;
   emEventOrg: string;
+  gender: string;
+  surName: string;
+  active: boolean;
 };
 type Response = { statuscode: number };
 
@@ -25,6 +28,9 @@ export const useCreateUser = createMutation<Response, Variables, AxiosError>({
         phoneNumber: variables.phoneNumber,
         matchingPassword: variables.matchingPassword,
         emEventOrg: variables.emEventOrg,
+        surName: "",
+        gender: "",
+        active: true,
       }
     );
     console.log(response.data);

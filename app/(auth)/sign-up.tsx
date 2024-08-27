@@ -59,7 +59,7 @@ const Signup = () => {
             console.log("Token:", data.statuscode);
 
             const token = data.statuscode;
-
+            console.log(token);
             if (token) {
               Alert.alert("Success", "You LoggedIn !!");
             }

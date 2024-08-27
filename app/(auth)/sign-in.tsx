@@ -46,7 +46,7 @@ const Signin = () => {
             const token = data.jwtToken;
 
             if (token) {
-              router.replace("/(root)/(menu)/eventitem");
+              router.replace("/(root)/(screen)/(menu)/eventitem");
             }
             setForm({ ...form, email: "", password: "" });
           },
@@ -81,7 +81,7 @@ const Signin = () => {
               <FormField
                 title="Email"
                 value={form.email}
-                placeholder="Email or Phone Number"
+                placeholder="Email"
                 handleChangeText={(e: any) => setForm({ ...form, email: e })}
               />
 
