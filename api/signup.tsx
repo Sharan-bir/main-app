@@ -14,7 +14,7 @@ type Variables = {
   surName: string;
   active: boolean;
 };
-type Response = { statuscode: number };
+type Response = [];
 
 export const useCreateUser = createMutation<Response, Variables, AxiosError>({
   mutationFn: async (variables) => {
@@ -34,6 +34,7 @@ export const useCreateUser = createMutation<Response, Variables, AxiosError>({
       }
     );
     console.log(response.data);
+    console.log("hello");
     return response.data;
   },
 });

@@ -15,6 +15,7 @@ import LinkButton from "@/components/LinkButton";
 import { images } from "@/constants";
 import { useGetToken } from "@/api/Loginapi";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Signin = () => {
   const [form, setForm] = useState({
@@ -25,6 +26,16 @@ const Signin = () => {
   const router = useRouter();
 
   const { mutate: getToken } = useGetToken();
+
+  // token storage
+  const storeToken = async (token: any) => {
+    try {
+      await AsyncStorage.setItem("Token", token);
+      console.log("Token Saved!!!");
+    } catch (e) {
+      console.error("Error saving token:", e);
+    }
+  };
 
   const submit = async () => {
     if (!form.email || !form.password) {
@@ -44,9 +55,10 @@ const Signin = () => {
             console.log("Token:", data.jwtToken);
 
             const token = data.jwtToken;
-
+            storeToken(token);
             if (token) {
-              router.replace("/(root)/(screen)/(menu)/eventitem");
+              // router.replace("/(root)/(screen)/(menu)/eventitem");
+              router.replace("/(auth)/home");
             }
             setForm({ ...form, email: "", password: "" });
           },

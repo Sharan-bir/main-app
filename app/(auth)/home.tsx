@@ -22,7 +22,7 @@ const Home = () => {
           <ItemCard
             keyId={event.itemId}
             title={event.itemName}
-            imageUrl={imagee}
+            imageUrl={event.imageString}
           />
         ))}
       </ScrollView>

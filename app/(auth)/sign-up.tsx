@@ -14,6 +14,9 @@ import SignupButton from "@/components/SignupButton";
 import { images } from "@/constants";
 import { useCreateUser } from "@/api/signup";
 import LinkButton from "@/components/LinkButton";
+import { useRouter } from "expo-router";
+import { useGetToken } from "@/api/Loginapi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -29,6 +32,20 @@ const Signup = () => {
     active: true,
   });
   const { mutate: createUser } = useCreateUser();
+
+  const router = useRouter();
+
+  // token storage
+  const storeToken = async (token: any) => {
+    try {
+      await AsyncStorage.setItem("Token", token);
+      console.log("Token Saved!!!");
+    } catch (e) {
+      console.error("Error saving token:", e);
+    }
+  };
+
+  const { mutate: getToken } = useGetToken();
 
   const submit = async () => {
     if (
@@ -61,14 +78,35 @@ const Signup = () => {
         },
         {
           onSuccess: (data: any) => {
-            console.log("Token:", data.statuscode);
+            console.log("Data : ", data);
+            // automatic Login
+            getToken(
+              {
+                username: form.emailId,
+                password: form.password,
+              },
+              {
+                onSuccess: (data: any) => {
+                  console.log("Token:", data.jwtToken);
 
-            const token = data.statuscode;
-            console.log(token);
-            if (token) {
-              Alert.alert("Success", "You LoggedIn !!");
-            }
-            setForm({ ...form, emailId: "", password: "" });
+                  const token = data.jwtToken;
+
+                  storeToken(token);
+                  if (token) {
+                    // router.replace("/(root)/(screen)/(menu)/eventitem");
+                    router.replace("/(auth)/home");
+                  }
+                },
+                onError: (error: any) => {
+                  console.error("Error during authentication:", error);
+
+                  Alert.alert(
+                    "Authentication Error",
+                    error.message || "An error occurred"
+                  );
+                },
+              }
+            );
           },
           onError: (error: any) => {
             console.error("Error during authentication:", error);

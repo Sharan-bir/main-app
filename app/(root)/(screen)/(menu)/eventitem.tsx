@@ -4,9 +4,12 @@ import { images } from "@/constants";
 import AddButton from "@/components/AddButton";
 import SearchBar from "@/components/SearchBar";
 import { Feather } from "@expo/vector-icons";
+import { useFocusEffect } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const eventitem = () => {
   const [search, setSearch] = useState("");
+
   return (
     <>
       <View style={styles.TopOptions}>

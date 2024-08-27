@@ -10,6 +10,3 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }
-const userAuthToken = "";
-
-export const bearerToken = `Bearer ${userAuthToken}`;
