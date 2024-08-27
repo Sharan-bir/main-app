@@ -24,7 +24,11 @@ const Signup = () => {
     emEventOrg: "",
     matchingPassword: "",
     phoneNumber: "",
+    surName: "",
+    gender: "",
+    active: true,
   });
+  const { mutate: createUser } = useCreateUser();
 
   const submit = async () => {
     if (
@@ -39,8 +43,6 @@ const Signup = () => {
       Alert.alert("Error", "Please fill in all fields");
     }
 
-    const { mutate: createUser } = useCreateUser();
-
     try {
       console.log(form.emailId, form.phoneNumber, form.emEventOrg);
       // api logic goes here
@@ -53,6 +55,9 @@ const Signup = () => {
           phoneNumber: form.phoneNumber,
           matchingPassword: form.matchingPassword,
           emEventOrg: form.emEventOrg,
+          surName: form.surName,
+          gender: form.gender,
+          active: form.active,
         },
         {
           onSuccess: (data: any) => {

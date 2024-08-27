@@ -28,9 +28,9 @@ export const useCreateUser = createMutation<Response, Variables, AxiosError>({
         phoneNumber: variables.phoneNumber,
         matchingPassword: variables.matchingPassword,
         emEventOrg: variables.emEventOrg,
-        surName: "",
-        gender: "",
-        active: true,
+        surName: variables.surName,
+        gender: variables.gender,
+        active: variables.active,
       }
     );
     console.log(response.data);
