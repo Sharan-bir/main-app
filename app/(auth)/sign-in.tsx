@@ -57,12 +57,13 @@ const Signin = () => {
             const token = data.jwtToken;
             storeToken(token);
             if (token) {
-              // router.replace("/(root)/(screen)/(menu)/eventitem");
-              router.replace("/(auth)/home");
+              router.replace("/(root)/(screen)/(menu)/eventitem");
+              // router.replace("/(auth)/home");
             }
             setForm({ ...form, email: "", password: "" });
           },
           onError: (error: any) => {
+            Alert.alert("Error", "Wrong Credentials!!");
             console.error("Error during authentication:", error);
 
             Alert.alert(

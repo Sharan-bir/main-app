@@ -1,14 +1,12 @@
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
-import { Link } from "expo-router";
-import { useGetEventItems } from "@/api/getEventItems";
+import { Link, useFocusEffect } from "expo-router";
+import { getItems } from "@/api/Items/getItems";
 import ItemCard from "@/components/ItemCard";
 
 const Home = () => {
-  const { data } = useGetEventItems();
-  const imagee =
-    "https://eventexperts.s3.ap-northeast-2.amazonaws.com/11/arch%20wedding%20decor";
+  const { data } = getItems();
   return (
     <SafeAreaView>
       <Link href="/(root)/(screen)/(menu)/eventitem">
@@ -17,14 +15,22 @@ const Home = () => {
         </Text>
       </Link>
 
-      <ScrollView>
-        {data?.map((event) => (
-          <ItemCard
-            keyId={event.itemId}
-            title={event.itemName}
-            imageUrl={event.imageString}
-          />
-        ))}
+      <ScrollView style={style.bottom}>
+        {data ? (
+          data.map((event) => (
+            <ItemCard
+              keyId={event.itemId}
+              title={event.itemName}
+              imageUrl={event.itemImagePath}
+              price={event.itemCost}
+              ShowPrice={true}
+            />
+          ))
+        ) : (
+          <View style={{ marginTop: 10 }}>
+            <Text style={{ fontWeight: "medium", marginRight: 60 }}>hello</Text>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -37,5 +43,8 @@ const style = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  bottom: {
+    marginBottom: 1,
   },
 });

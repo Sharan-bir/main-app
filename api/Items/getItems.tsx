@@ -1,9 +1,7 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { AxiosError } from "axios";
 import axios from "axios";
 import { createQuery } from "react-query-kit";
-import { useFocusEffect } from "expo-router";
-import React from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type EventItems = {
   itemId: number;
@@ -19,27 +17,17 @@ export type EventItems = {
 type Response = EventItems[];
 type Variables = void;
 
-const [token, setToken] = React.useState<string | null>(null);
-
-useFocusEffect(
-  React.useCallback(() => {
-    AsyncStorage.getItem("Token")
-      .then((jwtToken) => setToken(jwtToken))
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [])
-);
-
-export const useGetEventItems = createQuery<Response, Variables, AxiosError>({
-  queryKey: ["event-items"],
-  fetcher: async () => {
+export const getItems = createQuery<Response, Variables, AxiosError>({
+  queryKey: ["get-items"],
+  fetcher: async (_, { signal }) => {
+    const token = await AsyncStorage.getItem("Token");
     const url =
       "http://ec2-35-78-87-126.ap-northeast-1.compute.amazonaws.com:8080/event/items";
     const response = await axios.get(url, {
       headers: {
-        Authorization: "Bearer" + token,
+        Authorization: "Bearer " + token,
       },
+      signal,
     });
     console.log(response.data);
     return response.data;
