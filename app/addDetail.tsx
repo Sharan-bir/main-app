@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Alert,
   KeyboardAvoidingView,
-  Platform,
   ScrollView,
   TouchableOpacity,
 } from "react-native";
@@ -14,7 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import EventField from "@/components/EventField";
 import AddItemModal from "@/components/AddItemModal"; // Adjust import path as necessary
 import ActionButton from "@/components/ActionButton";
-import { router, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 
 const addDetail = () => {
@@ -26,7 +25,7 @@ const addDetail = () => {
   const [isAddButtonEnabled, setIsAddButtonEnabled] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
-  const [previewItems, setPreviewItems] = useState<string[]>([]); // Change to an array of strings
+  const [previewItems, setPreviewItems] = useState<string[]>([]);
 
   useEffect(() => {
     const checkIfFieldsAreFilled = () => {
@@ -64,16 +63,19 @@ const addDetail = () => {
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
+
   const router = useRouter();
+
   const handleBackPress = () => {
-    router.replace("/(root)/(screen)/(menu)/eventdetail");
-  };
-  const handleBack = () => {
-    router.replace("/(root)/(screen)/(menu)/eventdetail");
+    router.push("/(root)/(screen)/(menu)/eventdetail");
   };
 
   const handleSubmit = () => {
     Alert.alert("Submit", "Submit button clicked!");
+  };
+
+  const handleGenerateQuotation = () => {
+    Alert.alert("Generate Quotation", "Generate Quotation button clicked!");
   };
 
   const items = [
@@ -155,20 +157,29 @@ const addDetail = () => {
                     style={styles.addButton}
                   />
                 )}
+
                 {previewItems.length > 0 && (
-                  <ActionButton
-                    label="Add More"
-                    onPress={() => setIsModalVisible(true)}
-                    enabled={true}
-                    style={styles.addButton}
-                  />
+                  <View style={styles.buttonContainer}>
+                    <ActionButton
+                      label="Add More"
+                      onPress={() => setIsModalVisible(true)}
+                      enabled={true}
+                      style={styles.leftButton}
+                    />
+                    <ActionButton
+                      label="Generate Quotation"
+                      onPress={handleGenerateQuotation}
+                      enabled={true}
+                      style={styles.rightButton}
+                    />
+                  </View>
                 )}
               </View>
             </View>
             <View style={styles.footer}>
               <ActionButton
                 label="Back"
-                onPress={handleBack}
+                onPress={handleBackPress}
                 enabled={true}
                 style={styles.footerButton}
               />
@@ -209,7 +220,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "90%", // Adjusted for better fit
-    padding: 0,
   },
   footer: {
     flexDirection: "row",
@@ -232,24 +242,35 @@ const styles = StyleSheet.create({
     marginBottom: 10, // Add some margin at the bottom if needed
   },
   previewContainer: {
-    flexDirection: "row",
-    alignItems: "center", // Center items vertically
     width: "100%",
     marginBottom: 20,
-    marginRight: 50,
   },
   previewItemsField: {
     flex: 1, // Take up remaining space
     borderWidth: 1,
     borderColor: "#000",
     borderRadius: 4,
+    width: "95%",
+    marginRight: 70,
     padding: 20,
-    marginRight: 2,
+    alignSelf: "center",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+  leftButton: {
+    width: "40%",
+    marginLeft: 25,
+  },
+  rightButton: {
+    width: "40%",
   },
   addButton: {
-    alignSelf: "center", // Align button vertically with text
-    padding: 2,
-    marginLeft: 50,
+    padding: 4,
+    maxWidth: 100,
+    marginLeft: 25,
   },
   DrawerContainer: {
     flexDirection: "row", // Align items in a row

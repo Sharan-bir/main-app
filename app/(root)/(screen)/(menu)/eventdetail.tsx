@@ -19,7 +19,7 @@ const eventdetail = () => {
   const router = useRouter();
 
   const openDetailForm = () => {
-    router.replace("/addDetail");
+    router.push("/addDetail");
   };
 
   // Current date

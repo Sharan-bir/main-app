@@ -5,7 +5,7 @@ const SigninButton = ({ label, onPress }: any) => {
   const router = useRouter();
   return (
     <View style={styles.buttonContainer}>
-      <Pressable style={styles.button} onPress={() => router.replace(onPress)}>
+      <Pressable style={styles.button} onPress={() => router.push(onPress)}>
         <Text style={styles.text}>{label}</Text>
       </Pressable>
     </View>

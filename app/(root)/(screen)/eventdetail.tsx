@@ -22,7 +22,7 @@ const eventdetail = () => {
   const navigation = useNavigation();
 
   const openDetailForm = () => {
-    router.replace("/addDetail");
+    router.push("/addDetail");
   };
   const handleBackPress = () => {
     // Navigate back to the drawer screen (or specify your target route)

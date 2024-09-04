@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   modalButton: {
-    backgroundColor: "grey", // Different color for modal button
+    backgroundColor: "#fef100", // Different color for modal button
   },
   buttonText: {
     color: "#000",

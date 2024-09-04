@@ -6,9 +6,12 @@ import {
   Modal,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import QuantitySelector from "./QuantitySelector"; // Adjust import path as necessary
 import ActionButton from "./ActionButton";
+import { Feather } from "@expo/vector-icons"; // Ensure you've installed @expo/vector-icons
+
 interface Item {
   id: string;
   name: string;
@@ -77,9 +80,9 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
         onPress={() => handleItemPress(item)}
         style={[styles.itemContainer, isSelected && styles.itemSelected]}
       >
+        <Text style={styles.itemName}>{item.name}</Text>
         <Image source={item.image} style={styles.itemImage} />
         <View style={styles.textContainer}>
-          <Text style={styles.itemName}>{item.name}</Text>
           <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
           {isSelected && (
             <QuantitySelector
@@ -109,25 +112,30 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
         <View style={styles.modalContent}>
           <View style={styles.gridContainer}>
             <View style={styles.header}>
+              <TouchableOpacity onPress={onClose}>
+                <Feather name="arrow-left" size={24} color="black" />
+              </TouchableOpacity>
               <Text style={styles.headerTitle}>ALL ITEMS</Text>
             </View>
-            <View style={styles.itemsContainer}>
-              {rows.map((row, rowIndex) => (
-                <View key={rowIndex} style={styles.row}>
-                  {row.map((item) => renderItem(item))}
-                </View>
-              ))}
-            </View>
-            <View style={styles.buttonContainer}>
-              <ActionButton
-                label={`ADD ${Object.keys(selectedItems).length} ITEM${
-                  Object.keys(selectedItems).length > 1 ? "S" : ""
-                }`}
-                onPress={handleAddItems}
-                enabled={Object.keys(selectedItems).length > 0}
-                variant="modal"
-              />
-            </View>
+            <ScrollView>
+              <View style={styles.itemsContainer}>
+                {rows.map((row, rowIndex) => (
+                  <View key={rowIndex} style={styles.row}>
+                    {row.map((item) => renderItem(item))}
+                  </View>
+                ))}
+              </View>
+              <View style={styles.buttonContainer}>
+                <ActionButton
+                  label={`ADD ${Object.keys(selectedItems).length} ITEM${
+                    Object.keys(selectedItems).length > 1 ? "S" : ""
+                  }`}
+                  onPress={handleAddItems}
+                  enabled={Object.keys(selectedItems).length > 0}
+                  variant="modal"
+                />
+              </View>
+            </ScrollView>
           </View>
         </View>
       </View>
@@ -144,24 +152,26 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: "90%",
+    height: "90%",
     backgroundColor: "#FFF",
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
   },
   gridContainer: {
-    width: "100%",
+    width: "90%",
+    height: "99%",
   },
   header: {
     width: "100%",
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 30,
   },
   headerTitle: {
     fontSize: 15,
     fontWeight: "400",
+    marginLeft: 10, // Space between arrow and title
   },
   itemsContainer: {
     width: "100%",
@@ -177,7 +187,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#000",
     backgroundColor: "#FFF",
-    padding: 10,
+    padding: 5,
     borderRadius: 5,
   },
   itemSelected: {

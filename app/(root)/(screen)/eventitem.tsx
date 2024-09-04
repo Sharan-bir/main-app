@@ -37,7 +37,7 @@ const eventitem = () => {
   const [error, setError] = useState<string | null>(null);
 
   const openItemCreation = () => {
-    router.replace("/addItem");
+    router.push("/addItem");
   };
 
   const navigation = useNavigation();
