@@ -6,8 +6,9 @@ import {
   Animated,
   Text,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { images } from "@/constants";
 import AddButton from "@/components/AddButton";
 import SearchBar from "@/components/SearchBar";
@@ -15,42 +16,100 @@ import { Feather } from "@expo/vector-icons";
 import { getItems } from "@/api/Items/getItems";
 import ItemCard from "@/components/ItemCard";
 import { useRouter } from "expo-router";
+import { getHash } from "@/api/userHashItems/getHash";
+import * as Clipboard from "expo-clipboard";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const eventitem = () => {
   const [search, setSearch] = useState("");
   const [isEnabled, setIsEnabled] = useState(false);
   const [animatedValue] = useState(new Animated.Value(0));
-  const { data } = getItems();
+  // Clipboard finction
+  const { data, isLoading: isLoadingItems } = getItems();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const { refetch: refetchHash } = getHash();
+  // Search item
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [allItems, setAllItems] = useState<any[]>([]);
+  const debouncedSearch = useDebounce(search, 300);
+  const [error, setError] = useState<string | null>(null);
 
   const openItemCreation = () => {
-    router.replace("/(root)/(screen)/(menu)/eventitem");
+    router.replace("/addItem");
   };
+
+  // Switch toggle
   const toggleSwitch = () => {
     setIsEnabled(!isEnabled);
-
-    // Animate the thumb movement
     Animated.timing(animatedValue, {
       toValue: isEnabled ? 0 : 1,
       duration: 500,
       useNativeDriver: false,
     }).start();
   };
+
   const thumbPosition = animatedValue.interpolate({
     inputRange: [0, 1],
     outputRange: [2, 27],
   });
 
+  // Clipboard function
+  const handleClipboardPress = async () => {
+    setIsLoading(true);
+    try {
+      const result = await refetchHash();
+      const hash = result.data;
+
+      const baseUrl = "http://eventexperts.in/Home/auth";
+      const showCost = isEnabled ? "true" : "false";
+      const link = `${baseUrl}/${hash}/${showCost}`;
+
+      await Clipboard.setStringAsync(link);
+      console.log("Link copied to clipboard:", link);
+    } catch (error) {
+      console.error("Error fetching hash or copying to clipboard:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Iteam Search
+  useEffect(() => {
+    if (data) {
+      setAllItems(data);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (debouncedSearch) {
+      const lowercasedSearch = debouncedSearch.toLowerCase();
+      const filteredItems = allItems.filter((item) =>
+        item.itemName.toLowerCase().includes(lowercasedSearch)
+      );
+      setSearchResults(filteredItems);
+      console.log(filteredItems);
+    } else {
+      setSearchResults([]);
+      console.log([]);
+    }
+  }, [debouncedSearch, allItems]);
+
+  const displayItems = searchResults.length > 0 ? searchResults : allItems;
+
   return (
     <>
-      {data && data.length > 0 ? (
+      {data && data.length > 0 && (
+        // Search option
         <View style={styles.TopOptions}>
           <SearchBar
             value={search}
             placeholder="Search items by name"
-            handleChangeText={(e: any) => setSearch(e)}
+            handleChangeText={(e: string) => setSearch(e)}
             customWidth="90%"
           />
+
+          {/* Toggle button */}
           <View style={{ alignItems: "center", marginRight: 80 }}>
             <Text style={styles.toggleText}>
               {isEnabled ? "Hide Price" : "Show Price"}
@@ -72,25 +131,34 @@ const eventitem = () => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity onPress={() => console.log("ClipBoard pressed")}>
-            <Feather
-              name="clipboard"
-              size={24}
-              color="black"
-              style={styles.clipboard}
-            />
+          {/* Clipboard button */}
+          <TouchableOpacity onPress={handleClipboardPress} disabled={isLoading}>
+            {isLoading ? (
+              <ActivityIndicator
+                size="small"
+                color="#000"
+                style={styles.clipboard}
+              />
+            ) : (
+              <Feather
+                name="clipboard"
+                size={24}
+                color="black"
+                style={styles.clipboard}
+              />
+            )}
           </TouchableOpacity>
         </View>
-      ) : (
-        <Text></Text>
       )}
       <ScrollView style={{ marginTop: 10 }}>
-        {data && data.length > 0 ? (
+        {error && <Text style={styles.errorText}>{error}</Text>}
+        {displayItems && displayItems.length > 0 ? (
+          // Displaying Items
           <View style={styles.ItemContainer}>
-            {/* First row with three components and a fixed component on the right */}
             <View style={styles.row}>
-              {data.slice(0, 2).map((event) => (
+              {displayItems.slice(0, 2).map((event) => (
                 <ItemCard
+                  key={event.itemId}
                   keyId={event.itemId}
                   title={event.itemName}
                   imageUrl={event.itemImagePath}
@@ -98,8 +166,6 @@ const eventitem = () => {
                   ShowPrice={isEnabled}
                 />
               ))}
-              {/* Fixed component on the right of the first row */}
-
               <View style={styles.fixedComponent}>
                 <TouchableOpacity onPress={openItemCreation}>
                   <View style={styles.square}>
@@ -109,30 +175,36 @@ const eventitem = () => {
               </View>
             </View>
 
-            {/* Subsequent rows with 3 components each */}
-            {Array.from({ length: Math.ceil(data.slice(3).length / 3) }).map(
-              (_, rowIndex) => (
-                <View style={styles.row} key={rowIndex}>
-                  {data
-                    .slice(3 + rowIndex * 3, 3 + (rowIndex + 1) * 3)
-                    .map((event) => (
-                      <ItemCard
-                        key={event.itemId}
-                        keyId={event.itemId}
-                        title={event.itemName}
-                        imageUrl={event.itemImagePath}
-                        price={event.itemCost}
-                        ShowPrice={isEnabled}
-                      />
-                    ))}
-                </View>
-              )
-            )}
+            {Array.from({
+              length: Math.ceil(displayItems.slice(3).length / 3),
+            }).map((_, rowIndex) => (
+              <View style={styles.row} key={rowIndex}>
+                {displayItems
+                  .slice(3 + rowIndex * 3, 3 + (rowIndex + 1) * 3)
+                  .map((event) => (
+                    <ItemCard
+                      key={event.itemId}
+                      keyId={event.itemId}
+                      title={event.itemName}
+                      imageUrl={event.itemImagePath}
+                      price={event.itemCost}
+                      ShowPrice={isEnabled}
+                    />
+                  ))}
+              </View>
+            ))}
           </View>
         ) : (
+          // Little  Animation - No item
           <View style={styles.container}>
-            <Image source={images.boxGif} style={styles.gif} />
-            <AddButton label="Add Items" />
+            {search ? (
+              <Text style={styles.noResultsText}>No items found</Text>
+            ) : (
+              <>
+                <Image source={images.boxGif} style={styles.gif} />
+                <AddButton onPress={"/addItem"} label="Add Items" />
+              </>
+            )}
           </View>
         )}
       </ScrollView>
@@ -199,10 +271,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 5, // space between rows
+    marginBottom: 5,
   },
   fixedComponent: {
-    maxWidth: 110, // Fixed width for the fixed component
+    maxWidth: 110,
     height: 107,
     borderWidth: 1,
     margin: 5,
@@ -225,5 +297,24 @@ const styles = StyleSheet.create({
   plus: {
     fontSize: 16,
     color: "#000",
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginTop: 10,
+    marginBottom: 10,
+    fontSize: 14,
+    fontFamily: "MontserratRegular",
+  },
+  noResultsText: {
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 20,
+    fontFamily: "MontserratRegular",
+  },
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

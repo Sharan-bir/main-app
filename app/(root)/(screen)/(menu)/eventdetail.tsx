@@ -9,30 +9,32 @@ import {
 import React, { useState } from "react";
 import { images } from "@/constants";
 import AddButton from "@/components/AddButton";
-import SearchBar from "@/components/SearchBar";
 import { useRouter } from "expo-router";
 import { getEvents } from "@/api/Events/getEvents";
 import UpcomingEvent from "@/components/UpcomingEvent";
 import PastEvent from "@/components/PastEvent";
 
 const eventdetail = () => {
-  const [search, setSearch] = useState("");
   const { data } = getEvents();
-
   const router = useRouter();
+
   const openDetailForm = () => {
-    router.replace("/(root)/(screen)/(menu)/eventitem");
+    router.replace("/addDetail");
   };
+
+  // Current date
+  const currentDate = new Date();
+
+  // Function to check if the event date is in the past or upcoming
+  const isPastEvent = (eventDate: any) => {
+    const eventDateTime = new Date(parseInt(eventDate)); // Convert the event date
+    return eventDateTime < currentDate; // Compare with current date
+  };
+
   return (
     <>
       {data && data.length > 0 ? (
         <>
-          <SearchBar
-            value={search}
-            placeholder="Search Events by name"
-            handleChangeText={(e: any) => setSearch(e)}
-            customWidth="auto"
-          />
           <View style={styles.heading}>
             <Text style={styles.headingText}>All events</Text>
             <TouchableOpacity onPress={openDetailForm}>
@@ -49,37 +51,44 @@ const eventdetail = () => {
       <ScrollView>
         {data && data.length > 0 ? (
           <>
+            {/* Upcoming Events */}
             <View style={styles.Textcontainer}>
               <Text style={styles.boldText}>Upcoming Events</Text>
             </View>
             <View style={styles.Eventcontainer}>
-              {data.map((event) => (
-                <UpcomingEvent
-                  KeyId={event.eventId}
-                  title={event.eventName}
-                  address={event.eventVenue}
-                  date={event.eventDate}
-                />
-              ))}
+              {data
+                .filter((event) => !isPastEvent(event.eventDate)) // Filter upcoming events
+                .map((event) => (
+                  <UpcomingEvent
+                    KeyId={event.eventId}
+                    title={event.eventName}
+                    address={event.eventVenue}
+                    date={event.eventDate}
+                  />
+                ))}
             </View>
+
+            {/* Past Events */}
             <View style={styles.Textcontainer}>
               <Text style={styles.boldText}>Past Events</Text>
             </View>
             <View style={styles.Eventcontainer}>
-              {data.map((event) => (
-                <PastEvent
-                  KeyId={event.eventId}
-                  title={event.eventName}
-                  address={event.eventVenue}
-                  date={event.eventDate}
-                />
-              ))}
+              {data
+                .filter((event) => isPastEvent(event.eventDate)) // Filter past events
+                .map((event) => (
+                  <PastEvent
+                    KeyId={event.eventId}
+                    title={event.eventName}
+                    address={event.eventVenue}
+                    date={event.eventDate}
+                  />
+                ))}
             </View>
           </>
         ) : (
           <View style={styles.container}>
             <Image source={images.boxGif} style={styles.gif} />
-            <AddButton label="Add Details" />
+            <AddButton onPress={"/addDetail"} label="Add Details" />
           </View>
         )}
       </ScrollView>
@@ -103,6 +112,7 @@ const styles = StyleSheet.create({
   heading: {
     backgroundColor: "#f0f0f0",
     padding: 15,
+    marginTop: 4,
     borderBottomWidth: 0.4,
     flexDirection: "row",
     alignItems: "center",

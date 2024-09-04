@@ -1,4 +1,4 @@
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import {
   Image,
   Text,
@@ -10,7 +10,7 @@ import {
 import { images } from "@/constants";
 import { DrawerActions } from "@react-navigation/native";
 import { Drawer } from "expo-router/drawer";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomDrawer from "@/components/CustomDrawer";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import CustomDrawerLabel from "@/components/CustomDrawerLabel";
@@ -89,7 +89,7 @@ const DrawerLayout = () => {
         <Drawer.Screen
           name="eventitem"
           options={{
-            headerShown: true,
+            headerShown: false,
             drawerLabel: () => (
               <CustomDrawerLabel
                 title="Event Items"
@@ -105,11 +105,11 @@ const DrawerLayout = () => {
         <Drawer.Screen
           name="eventdetail"
           options={{
-            headerShown: true,
+            headerShown: false,
             drawerLabel: () => (
               <CustomDrawerLabel
                 title="Event Details"
-                subTitle="Manage your Items"
+                subTitle="Manage your Events"
               />
             ),
             drawerIcon: () => <Feather name="sunset" size={24} color="black" />,

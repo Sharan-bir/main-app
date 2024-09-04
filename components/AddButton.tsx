@@ -1,9 +1,11 @@
+import { useRouter } from "expo-router";
 import { Text, Pressable, StyleSheet, View } from "react-native";
 
 const SigninButton = ({ label, onPress }: any) => {
+  const router = useRouter();
   return (
     <View style={styles.buttonContainer}>
-      <Pressable style={styles.button} onPress={onPress}>
+      <Pressable style={styles.button} onPress={() => router.replace(onPress)}>
         <Text style={styles.text}>{label}</Text>
       </Pressable>
     </View>

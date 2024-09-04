@@ -59,6 +59,7 @@ function RootLayoutNav() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(root)" options={{ headerShown: false }} />
+        <Stack.Screen name="addDetail" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </APIProvider>
