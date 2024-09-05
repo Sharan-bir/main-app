@@ -58,7 +58,6 @@ const Signin = () => {
             storeToken(token);
             if (token) {
               router.replace("/(root)/(screen)/(menu)/eventitem");
-              // router.replace("/(auth)/home");
             }
             setForm({ ...form, email: "", password: "" });
           },
