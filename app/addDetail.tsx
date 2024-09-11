@@ -1,20 +1,19 @@
+
 import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Alert,
-  KeyboardAvoidingView,
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { images } from "@/constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import EventField from "@/components/EventField";
-import AddItemModal from "@/components/AddItemModal"; // Adjust import path as necessary
 import ActionButton from "@/components/ActionButton";
 import { useRouter } from "expo-router";
 import { Feather } from "@expo/vector-icons";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAddEvent } from "@/api/Events/addEvent";
 
 const addDetail = () => {
   const [name, setName] = useState("");
@@ -23,9 +22,13 @@ const addDetail = () => {
   const [eventDate, setEventDate] = useState<Date | undefined>(undefined);
   const [paymentDate, setPaymentDate] = useState<Date | undefined>(undefined);
   const [isAddButtonEnabled, setIsAddButtonEnabled] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [previewItems, setPreviewItems] = useState<string[]>([]);
+
+  
+  const { mutate: addEvent } = useAddEvent();
+  
+
 
   useEffect(() => {
     const checkIfFieldsAreFilled = () => {
@@ -52,44 +55,29 @@ const addDetail = () => {
     }
   }, [selectedItems]);
 
-  const handleAddItems = (items: any[]) => {
-    setSelectedItems((prevItems) => {
-      const updatedItems = [...prevItems, ...items];
-      return updatedItems;
-    });
-    Alert.alert("Items Added", `You have selected ${items.length} items.`);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
-  };
-
   const router = useRouter();
 
   const handleBackPress = () => {
     router.push("/(root)/(screen)/(menu)/eventdetail");
   };
 
-  const handleSubmit = () => {
-    Alert.alert("Submit", "Submit button clicked!");
+  const createEvent = async () => { 
+    try {
+      addEvent({ 
+        eventName: name,
+        eventDate: eventDate?.toISOString() || "",
+        eventDatetime: "",
+        paymentDate: paymentDate || "",
+        customerDetails: customerDetails,
+        eventItemsList: [],
+        eventVenue: venue,
+        eventStatus: "ONGOING"
+      });
+      router.push("/addEventItem");
+    } catch (error) {
+      console.error("Error adding event:", error); 
+    }
   };
-
-  const handleGenerateQuotation = () => {
-    Alert.alert("Generate Quotation", "Generate Quotation button clicked!");
-  };
-
-  const items = [
-    { id: "1", name: "Chair", image: images.mainLogo, price: 100 },
-    { id: "2", name: "Item 2", image: images.mainLogo, price: 200 },
-    { id: "3", name: "Item 3", image: images.mainLogo, price: 200 },
-    { id: "4", name: "Item 4", image: images.mainLogo, price: 200 },
-    { id: "5", name: "Item 5", image: images.mainLogo, price: 200 },
-    { id: "6", name: "Item 6", image: images.mainLogo, price: 200 },
-    { id: "7", name: "Item 7", image: images.mainLogo, price: 200 },
-    { id: "8", name: "Item 8", image: images.mainLogo, price: 200 },
-    { id: "9", name: "Item 9", image: images.mainLogo, price: 200 },
-    { id: "10", name: "Item 10", image: images.mainLogo, price: 200 },
-  ];
 
   return (
     <>
@@ -137,45 +125,8 @@ const addDetail = () => {
                 isDate={true}
                 onDateChange={setPaymentDate}
               />
-              <View style={styles.previewContainer}>
-                {previewItems.length > 0 && (
-                  <EventField
-                    title="Preview Items"
-                    value={previewItems.join("\n")} // Join items with newline
-                    placeholder="No items selected"
-                    editable={false} // Make this field read-only
-                    multiline // Enable multiline to show items vertically
-                    numberOfLines={previewItems.length} // Adjust the number of lines
-                    style={styles.previewItemsField}
-                  />
-                )}
-                {previewItems.length === 0 && (
-                  <ActionButton
-                    label="Add Items"
-                    onPress={() => setIsModalVisible(true)}
-                    enabled={isAddButtonEnabled}
-                    style={styles.addButton}
-                  />
-                )}
-
-                {previewItems.length > 0 && (
-                  <View style={styles.buttonContainer}>
-                    <ActionButton
-                      label="Add More"
-                      onPress={() => setIsModalVisible(true)}
-                      enabled={true}
-                      style={styles.leftButton}
-                    />
-                    <ActionButton
-                      label="Generate Quotation"
-                      onPress={handleGenerateQuotation}
-                      enabled={true}
-                      style={styles.rightButton}
-                    />
-                  </View>
-                )}
-              </View>
             </View>
+
             <View style={styles.footer}>
               <ActionButton
                 label="Back"
@@ -184,21 +135,15 @@ const addDetail = () => {
                 style={styles.footerButton}
               />
               <ActionButton
-                label="Submit"
-                onPress={handleSubmit}
-                enabled={previewItems.length > 0}
+                label="Create Event"
+                onPress={createEvent}
+                enabled={previewItems.length == 0}
                 style={styles.footerButton}
               />
             </View>
           </ScrollView>
         </View>
 
-        <AddItemModal
-          visible={isModalVisible}
-          onClose={handleCloseModal}
-          items={items}
-          onAddItem={handleAddItems}
-        />
       </SafeAreaView>
     </>
   );

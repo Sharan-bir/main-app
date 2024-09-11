@@ -7,7 +7,7 @@ type Variables = {
   eventName: string,
   eventDate: string,
   eventDatetime: string,
-  paymentDate: number,
+  paymentDate: string,
   customerDetails: string,
   eventItemsList: [],
   eventVenue: string,
@@ -15,7 +15,7 @@ type Variables = {
 };
 type Response = { statuscode: number };
 
-export const addEvent = createMutation<Response, Variables, AxiosError>({
+export const useAddEvent = createMutation<Response, Variables, AxiosError>({
   mutationFn: async (variables) => {
     const response = await axios.post(
       "http://ec2-35-78-87-126.ap-northeast-1.compute.amazonaws.com:8080/event/addevent",
@@ -31,7 +31,6 @@ export const addEvent = createMutation<Response, Variables, AxiosError>({
         eventStatus: variables.eventStatus,
       }
     );
-    console.log(response.data);
     return response.data;
   },
 });

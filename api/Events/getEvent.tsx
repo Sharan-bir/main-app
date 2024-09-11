@@ -27,12 +27,10 @@ type Variables = void;
 
 export const getEvent = createQuery<Response, Variables, AxiosError>({
   queryKey: ["get-event"],
-  fetcher: async ({ queryKey: [_, { eventId }] }) => {
+  fetcher: async ( eventId ) => {
     const url = `http://ec2-35-78-87-126.ap-northeast-1.compute.amazonaws.com:8080/event/event/${eventId}`;
     const response = await axios.get(url, {
-      headers: {
-        Authorization: bearerToken,
-      },
+      
     });
     console.log(response.data);
     return response.data;

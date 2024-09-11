@@ -1,5 +1,5 @@
-// NewFormPage.tsx
-import React, { useState } from "react";
+
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -8,13 +8,16 @@ import {
   ScrollView,
   TouchableOpacity,
   Text,
+  Image,
+  Button,
 } from "react-native";
 import EventField from "@/components/EventField";
-// import ImageHandler from "@/components/ImageHandler";
 import ActionButton from "@/components/ActionButton";
 import { Feather } from "@expo/vector-icons";
-import { router } from "react-query-kit";
 import { useRouter } from "expo-router";
+import * as ImagePicker from 'expo-image-picker';
+import { useAddItem } from "@/api/Items/addItem";
+import * as FileSystem from 'expo-file-system';
 
 const NewFormPage = () => {
   const [name, setName] = useState("");
@@ -22,22 +25,110 @@ const NewFormPage = () => {
   const [description, setDescription] = useState("");
   const [expectedCost, setExpectedCost] = useState("");
   const [imageUri, setImageUri] = useState<string | null>(null);
-  const [isSubmitEnabled, setIsSubmitEnabled] = useState(false);
-
-  const handleBack = () => {
-    Alert.alert("Back", "Back button clicked!");
-  };
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const { mutate: addItem } = useAddItem();
 
   const router = useRouter();
+
+  // For camera Permission
+  useEffect(() => {
+    (async () => {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status!== 'granted') {
+        alert('Sorry, we need camera permissions to make this work!');
+      }
+      const { status: libraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (libraryStatus!== 'granted') {
+        alert('Sorry, we need photo library permissions to make this work!');
+      }
+    })();
+  }, []);
+
+  const handleBack = () => {
+    router.push("/(root)/(screen)/(menu)/eventitem");
+  };
 
   const handleBackPress = () => {
     router.push("/(root)/(screen)/(menu)/eventitem");
   };
 
-  const handleSubmit = () => {
-    Alert.alert("Submit", "Submit button clicked!");
+  // Adding image
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      quality: 1,
+      base64: true,
+    });
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+      const imageBase64String = await convertImageToBase64(result.assets[0].uri);
+      setImageBase64(imageBase64String);
+    }
   };
 
+  // removing selected image
+  const removeImage = () => {
+    setSelectedImage(null);
+    setImageBase64(null);
+  };
+
+  // Capture image 
+  const takePicture = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      quality: 1,
+      base64: true,
+    });
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+      const imageBase64String = await convertImageToBase64(result.assets[0].uri);
+      setImageBase64(imageBase64String);
+    }
+  };
+
+  // converting image to Base64
+  const convertImageToBase64 = async (imageUri: string) => {
+    if (imageUri.startsWith('file://')) {
+      // Image from device
+      const file = await FileSystem.readAsStringAsync(imageUri, {
+        encoding: 'base64',
+      });
+      return file;
+    } else {
+      // image from camera
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      return new Promise((resolve) => {
+        reader.onloadend = () => {
+          resolve(reader.result);
+        };
+      });
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      addItem({
+        itemName: name,
+        itemType: category,
+        itemDesc: description,
+        itemCost: Number(expectedCost),
+        itemImagePath: imageBase64,
+        imageString: "",
+        itemAddFields: "",
+      });      
+      router.replace("/(root)/(menu)/eventitem");
+    } catch (error) {
+      Alert.alert("Error", "An error occurred while submitting the form.");
+    }
+  };
+
+  
   return (
     <>
       <View style={styles.DrawerContainer}>
@@ -48,6 +139,7 @@ const NewFormPage = () => {
       </View>
 
       <SafeAreaView style={styles.container}>
+        <ScrollView>
         <View style={styles.form}>
           <EventField
             title="Name"
@@ -74,8 +166,23 @@ const NewFormPage = () => {
             keyboardType="numeric"
             handleChangeText={setExpectedCost}
           />
-          {/* <ImageHandler imageUri={imageUri} setImageUri={setImageUri} /> */}
-        </View>
+          
+          {/* ------------- Adding pictures -------------- */}
+          <View style={styles.imageInputContainer}>
+            <TouchableOpacity onPress={pickImage} style={styles.imageInputBtn}>
+              <Text style={styles.imageInputBtnText}>Upload Image</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={takePicture} style={styles.imageInputBtn}>
+              <Text style={styles.imageInputBtnText}>Take Picture</Text>
+            </TouchableOpacity>
+            {selectedImage && (
+              <Image source={{ uri: selectedImage }} style={styles.imagePreview} /> 
+            )}
+            {selectedImage && (
+              <Button title="Remove Image" onPress={removeImage} />
+            )}
+          </View>
+
 
         <View style={styles.footer}>
           <ActionButton
@@ -87,10 +194,13 @@ const NewFormPage = () => {
           <ActionButton
             label="Submit"
             onPress={handleSubmit}
-            enabled={isSubmitEnabled}
+            enabled={true}
             style={styles.footerButton}
           />
         </View>
+
+      </View>
+      </ScrollView>
       </SafeAreaView>
     </>
   );
@@ -134,6 +244,39 @@ const styles = StyleSheet.create({
     height: 200,
     marginTop: "25%",
   },
+
+  
+  imagePreview: {
+    width: '100%',
+    height: 300,
+    resizeMode: 'contain',
+    marginTop: 10,
+  },  
+  
+  imageInputBtnText: {
+    fontSize: 14,
+    color: "#fff",
+  },
+
+
+  imageInputContainer: {
+    padding: 10,
+    marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  imageInputBtn: {
+    padding: 15,
+    borderRadius: 15,
+    backgroundColor: '#78909c',
+    flexDirection: 'row',
+    alignItems: 'center', 
+    justifyContent: 'center',
+    marginBottom: 20,
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  
 });
 
 export default NewFormPage;

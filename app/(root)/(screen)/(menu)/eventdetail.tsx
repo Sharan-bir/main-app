@@ -57,10 +57,10 @@ const eventdetail = () => {
             </View>
             <View style={styles.Eventcontainer}>
               {data
-                .filter((event) => !isPastEvent(event.eventDate)) // Filter upcoming events
+                .filter((event) => !isPastEvent(event.eventDate)) 
                 .map((event) => (
                   <UpcomingEvent
-                    KeyId={event.eventId}
+                    KeyId={event.eventId} // ---> in this id dont have any items then display a button in front of the ui
                     title={event.eventName}
                     address={event.eventVenue}
                     date={event.eventDate}

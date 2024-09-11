@@ -13,10 +13,10 @@ import ActionButton from "./ActionButton";
 import { Feather } from "@expo/vector-icons"; // Ensure you've installed @expo/vector-icons
 
 interface Item {
-  id: string;
-  name: string;
-  image: any;
-  price: number;
+  itemId: string;
+  itemName: string;
+  itemImagePath: any;
+  itemCost: number;
 }
 
 interface AddItemModalProps {
@@ -39,12 +39,12 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
   const handleItemPress = (item: Item) => {
     setSelectedItems((prevSelected) => {
       const newSelected = { ...prevSelected };
-      if (newSelected[item.id]) {
+      if (newSelected[item.itemId]) {
         // Item already selected, deselect it
-        delete newSelected[item.id];
+        delete newSelected[item.itemId];
       } else {
         // Item not selected, add it
-        newSelected[item.id] = { item, quantity: 1 };
+        newSelected[item.itemId] = { item, quantity: 1 };
       }
       return newSelected;
     });
@@ -64,7 +64,7 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
     const itemsToAdd = Object.values(selectedItems).map(
       ({ item, quantity }) => ({
         ...item,
-        price: item.price * quantity, // Adjust price based on quantity if needed
+        price: item.itemCost * quantity, // Adjust price based on quantity if needed
         quantity,
       })
     );
@@ -73,21 +73,21 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
   };
 
   const renderItem = (item: Item) => {
-    const isSelected = !!selectedItems[item.id];
+    const isSelected = !!selectedItems[item.itemId];
     return (
       <TouchableOpacity
-        key={item.id}
+        key={item.itemId}
         onPress={() => handleItemPress(item)}
         style={[styles.itemContainer, isSelected && styles.itemSelected]}
       >
-        <Text style={styles.itemName}>{item.name}</Text>
-        <Image source={item.image} style={styles.itemImage} />
+        <Text style={styles.itemName}>{item.itemName}</Text>
+        <Image source={{ uri: `${item.itemImagePath}` }} style={styles.itemImage} />
         <View style={styles.textContainer}>
-          <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
+          <Text style={styles.itemPrice}>${item.itemCost.toFixed(2)}</Text>
           {isSelected && (
             <QuantitySelector
-              itemId={item.id}
-              quantity={selectedItems[item.id]?.quantity || 1}
+              itemId={item.itemId}
+              quantity={selectedItems[item.itemId]?.quantity || 1}
               onQuantityChange={handleQuantityChange}
             />
           )}

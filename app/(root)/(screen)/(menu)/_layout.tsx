@@ -24,7 +24,12 @@ import Notification from "@/components/Notification";
       <View style={{backgroundColor:"white",borderTopWidth:1,borderTopColor:"grey"}}>
         <View style={styles.container}>
           <View style={styles.container2}>
-           <Notification/>
+           <Notification
+           KeyId = ''
+           Company = ""
+           Email = ""
+           Phone = ""
+           />
           </View>
         </View>
       </View>

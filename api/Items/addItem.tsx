@@ -14,7 +14,7 @@ type Variables = {
 };
 type Response = { statuscode: number };
 
-export const addItem = createMutation<Response, Variables, AxiosError>({
+export const useAddItem = createMutation<Response, Variables, AxiosError>({
   mutationFn: async (variables) => {
     const response = await axios.post(
       "http://ec2-35-78-87-126.ap-northeast-1.compute.amazonaws.com:8080/event/additem",
@@ -29,7 +29,6 @@ export const addItem = createMutation<Response, Variables, AxiosError>({
         imageString: variables.imageString
       }
     );
-    console.log(response.data);
     return response.data;
   },
 });
