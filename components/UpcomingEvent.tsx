@@ -1,40 +1,33 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
-import { FontAwesome } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 
-const UpcomingEvent = ({ title, address, date, KeyId }: any) => {
+const UpcomingEvent = ({ title, address, date, KeyId, item }: any) => {
+  const navigation = useNavigation();
+
   const formatDate = (timestamp: string) => {
     const dateObj = new Date(parseInt(timestamp)); // Convert the timestamp to a Date object
     const day = String(dateObj.getDate()).padStart(2, "0"); // Get day and ensure it's 2 digits
     const month = String(dateObj.getMonth() + 1).padStart(2, "0"); // Get month (0-indexed, so +1)
     const year = dateObj.getFullYear(); // Get full year
-
+      
     return `${day}/${month}/${year}`; // Return in "DD-MM-YYYY" format
   };
+  const router = useRouter();
+  const handleAddItems = () => {
+    router.push(`/addEventItem?KeyId=${KeyId}`); // Replace 'NewPage' with the actual route name
+  };
+
   return (
     <View key={KeyId} style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
-        {/* <View style={styles.iconContainer}>
-          <FontAwesome
-            name="edit"
-            size={20}
-            color="black"
-            onPress={() => {
-              console.log("Edit");
-            }}
-            style={styles.icon}
-          />
-          <FontAwesome
-            name="trash"
-            size={20}
-            color="black"
-            onPress={() => {
-              console.log("Delete");
-            }}
-            style={styles.icon}
-          />
-        </View> */}
+        { item == '' && (
+          <TouchableOpacity onPress={handleAddItems} style={styles.addButton}>
+            <Text style={styles.addButtonText}>Add Items</Text>
+          </TouchableOpacity>
+        )}
       </View>
       <Text style={{ lineHeight: 20, color: "#6e6c67", fontSize: 12 }}>
         {address}
@@ -57,7 +50,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     borderColor: "#0195B5",
-    height: 80,
+    height: 90,
     minWidth: "90%",
   },
   bold: {
@@ -71,10 +64,13 @@ const styles = StyleSheet.create({
   title: {
     flex: 1, // Ensures the title takes available space
   },
-  iconContainer: {
-    flexDirection: "row",
+  addButton: {
+    backgroundColor: "#0195B5",
+    borderRadius: 4,
+    padding: 5,
   },
-  icon: {
-    marginLeft: 15,
+  addButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });

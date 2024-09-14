@@ -2,12 +2,12 @@ import type { AxiosError } from "axios";
 import axios from "axios";
 import { createMutation } from "react-query-kit";
 
-type Variables = {
-  id: number,
-  itemId: number,
-  itemName: string,
-  quantity: number,
-  eventId: number
+export type Variables = {
+  id: number;
+  itemId: number;
+  itemName: string;
+  quantity: number;
+  eventId: number;
 };
 type Response = { statuscode: number };
 
@@ -23,7 +23,6 @@ export const addEventItems = createMutation<Response, Variables, AxiosError>({
         eventId: variables.eventId
       }
     );
-    console.log(response.data);
     return response.data;
   },
 });

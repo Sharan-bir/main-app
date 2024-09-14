@@ -13,6 +13,7 @@ import React from "react";
 import CustomDrawer from "@/components/CustomDrawer";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import CustomDrawerLabel from "@/components/CustomDrawerLabel";
+import { allNotifications } from "@/api/notifications/allNotifications";
 
 const DrawerLayout = () => {
   const navigation = useNavigation();
@@ -27,6 +28,9 @@ const DrawerLayout = () => {
       "/notification/readedNotification"
     )
   };
+  const { data } = allNotifications();
+  const unreadCount = data?.filter(notification => notification.noStatus == "Unread").length;
+ 
 
   return (
     <>
@@ -66,7 +70,7 @@ const DrawerLayout = () => {
                       <Image style={style.iconSize} source={images.Bell} />
                       <View style={style.circle}>
                         <Text style={style.notificationNumber}>
-                          20 {/* Dynamic Number goes here */}
+                        {unreadCount} 
                         </Text>
                       </View>
                     </View>

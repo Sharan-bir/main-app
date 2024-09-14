@@ -32,7 +32,7 @@ export const getEvent = createQuery<Response, Variables, AxiosError>({
     const response = await axios.get(url, {
       
     });
-    console.log(response.data);
+    
     return response.data;
   },
 });

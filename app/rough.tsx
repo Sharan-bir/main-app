@@ -2,30 +2,32 @@ import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import ActionButton from '@/components/ActionButton';
 import { getItems } from '@/api/Items/getItems';
+import { useMutation } from '@tanstack/react-query';
+import { addEventItems } from '@/api/Events/addEventItems';
 import { useGlobalSearchParams } from 'expo-router';
 import { generateQuotation } from '@/api/Events/generateQuotation';
 
-const AddEventItems = () => {
+const rough = () => {
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [itemQuantities, setItemQuantities] = useState<{ [key: number]: number }>({});
-  
-  // Call hooks inside the component
-  const { data } = getItems(); 
-  const { KeyId } = useGlobalSearchParams();
-  const { mutate: addQuotation } = generateQuotation();
+
+  const { data } = getItems();
 
   const handleSelectItem = (item: any) => {
     setSelectedItems((prev) => {
       const isItemSelected = prev.some((selectedItem) => selectedItem.itemId === item.itemId);
 
       if (isItemSelected) {
+        // Deselect item and remove it from the selected items list
         setItemQuantities((prevQuantities) => {
           const updatedQuantities = { ...prevQuantities };
-          delete updatedQuantities[item.itemId];
+          delete updatedQuantities[item.itemId]; // Remove quantity for deselected item
           return updatedQuantities;
         });
         return prev.filter((selectedItem) => selectedItem.itemId !== item.itemId);
       }
+
+      // Select item and add it to the selected items list
       return [...prev, item];
     });
   };
@@ -44,8 +46,7 @@ const AddEventItems = () => {
       <TouchableOpacity
         key={item.itemId}
         style={[styles.itemContainer, isSelected && styles.selectedItem]}
-        onPress={() => handleSelectItem(item)}
-      >
+        onPress={() => handleSelectItem(item)}>
         <Image source={{ uri: item.itemImagePath }} style={styles.itemImage} />
         <Text style={styles.itemText}>{item.itemName}</Text>
         <Text style={styles.itemPrice}>Price: ₹{item.itemCost}</Text>
@@ -54,15 +55,13 @@ const AddEventItems = () => {
           <View style={styles.counterContainer}>
             <TouchableOpacity
               onPress={() => handleQuantityChange(item.itemId, -1)}
-              style={styles.counterButton}
-            >
+              style={styles.counterButton}>
               <Text>-</Text>
             </TouchableOpacity>
             <Text style={styles.counterText}>{itemQuantities[item.itemId] || 1}</Text>
             <TouchableOpacity
               onPress={() => handleQuantityChange(item.itemId, 1)}
-              style={styles.counterButton}
-            >
+              style={styles.counterButton}>
               <Text>+</Text>
             </TouchableOpacity>
           </View>
@@ -70,27 +69,32 @@ const AddEventItems = () => {
       </TouchableOpacity>
     );
   };
-  console.log(KeyId);
+  const { mutate: addQuotation} = generateQuotation();
   const handleQuotation = () => {
+    // Use the mutation
+    
+
+    // Iterate over the selected items and call the API for each item
     selectedItems.forEach((item: any) => {
-      addQuotation(
-        {
-          itemId: item.itemId,
-          itemName: item.itemName,
-          quantity: itemQuantities[item.itemId] || 1,
-          eventId: Number(KeyId),
+      const { KeyId } = useGlobalSearchParams();
+
+      addQuotation( {
+        itemId: item.itemId,
+        itemName: item.itemName,
+        quantity: itemQuantities[item.itemId] || 1, // Default to 1 if quantity is not available
+        eventId: Number(KeyId), // Replace with the actual event ID, should be dynamic
+      },
+    {
+        onSuccess: (data: any) => {
+          console.log('Quotation generated successfully:', data);
+          // You can handle any success actions here, like showing a success message
         },
-        {
-          onSuccess: (data: any) => {
-            console.log('Quotation generated successfully:', data);
-          },
-          onError: (error: any) => {
-            console.error('Error generating quotation:', error);
-          },
-        }
-      );
-    });
-  };
+        onError: (error: any) => {
+          console.error('Error generating quotation:', error);
+          // Handle error (e.g., show an error message)
+        },
+    }
+    )});
 
   const SubmitEvents = () => {
     // logic for submitting selected items
@@ -132,6 +136,7 @@ const AddEventItems = () => {
     </View>
   );
 };
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -210,4 +215,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddEventItems;
+export default rough;

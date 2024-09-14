@@ -1,32 +1,54 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import React from 'react';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react';
+import { allNotifications } from '@/api/notifications/allNotifications';
 import NotificationDisplay from '@/components/NotificationDisplay';
-import {readNotifications} from '@/api/notifications/readNotifications';
+import { useReadNotifications } from '@/api/notifications/readNotifications';
 
-const unreadNotification = () => {
-  const { data } = readNotifications();
+const readedNotification = () => {
+  const { data } = allNotifications();
+  console.log(data);
   
+  // Filter the data to show only UnreadUnread notifications
+  const unreadNotifications = data ? data.filter(notification => notification.noStatus === "Unread") : [];
+  
+  const { mutate: readNotification } = useReadNotifications();
+
+  const ReadNotification = (id: any) => {
+    readNotification([id]);
+    
+  }
+
   return (
-     <>
-     <ScrollView>
-     {data && data.length > 0 ? (
-            <><View style={styles.Textcontainer}>
-            <Text style={styles.boldText}>Upcoming Events</Text>
-          </View><View style={styles.Eventcontainer}>
-              {data.map((event:any) => (
+    <>
+      <ScrollView>
+        {unreadNotifications.length > 0 ? (
+          <>
+            <View style={styles.Textcontainer}>
+              <Text style={styles.boldText}>Unread Notifications</Text>
+            </View>
+            <View style={styles.Eventcontainer}>
+              {unreadNotifications.map((notification) => (
+                <TouchableOpacity onPress={() => ReadNotification(notification.noId)}>
                 <NotificationDisplay
-                KeyId = {event.noId}
-                title={event.noMessage}
-                date={event.noDate} />
+                  KeyId={notification.noId}
+                  title={notification.noMessage}
+                  status={notification.noStatus}
+                />
+              </TouchableOpacity>
               ))}
-            </View></>
-            ):(<View></View>)}
-    </ScrollView>
-  </>
+            </View>
+          </>
+        ) : (
+          <View style={styles.Textcontainer}>
+            <Text>No unread notifications</Text>
+          </View>
+        )}
+      </ScrollView>
+    </>
   )
 }
 
-export default unreadNotification;
+export default readedNotification;
 
 const styles = StyleSheet.create({
   Eventcontainer: {
@@ -44,4 +66,4 @@ const styles = StyleSheet.create({
     fontFamily: "MontserratLight",
     fontWeight: "bold",
   },
-})
+});

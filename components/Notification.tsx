@@ -1,14 +1,17 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 
-const Notification = ({Company,KeyId,Email,Phone}:any) => {
+const Notification = ({ Company, Email, Phone }: any) => {
   return (
     <View style={style.container}>
-      <Text style={{ paddingLeft: 10 }}>
-        <Text style={style.bold}>Dance Event</Text>
-        <Text style={style.bold}>Indigo Xp, Kormangala, Bangalore-49</Text>
-        <Text style={style.bold}>05/10/2024.</Text>
-      </Text>
+      {/* Company centered at the top */}
+      <Text style={style.companyText}>{Company}</Text>
+
+      {/* Email and Phone displayed on the left and right below the company */}
+      <View style={style.infoRow}>
+        <Text style={style.emailText}>{Email}</Text>
+        <Text style={style.phoneText}>{Phone}</Text>
+      </View>
     </View>
   );
 };
@@ -20,10 +23,26 @@ const style = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingRight: 10,
-    paddingTop: 0,
+    padding: 10,
   },
-  bold: {
+  companyText: {
     fontWeight: "bold",
+    fontSize: 20,
+    textAlign: "center",
+  },
+  infoRow: {
+    flexDirection: "row", // Align Email and Phone horizontally
+    justifyContent: "space-between", // Push them to the sides
+    width: "100%", // Ensure row takes full width
+    paddingHorizontal: 20, // Padding for left and right spacing
+    marginTop: 10,
+  },
+  emailText: {
+    flex: 1, // This ensures Email sticks to the left
+    textAlign: "left",
+  },
+  phoneText: {
+    flex: 1, // This ensures Phone sticks to the right
+    textAlign: "right",
   },
 });

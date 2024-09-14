@@ -2,16 +2,17 @@ import type { AxiosError } from "axios";
 import axios from "axios";
 import { createMutation } from "react-query-kit";
 
-type Variables = {
-  eventId: number,
-  eventName: string,
-  eventDate: string,
-  eventDatetime: string,
-  paymentDate: string,
-  customerDetails: string,
-  eventItemsList: [],
-  eventVenue: string,
-  eventStatus: string
+
+export type Variables = {
+  eventId: number;
+  eventName: string;
+  eventDate: string;
+  eventDatetime: string;
+  paymentDate: string;
+  customerDetails: string;
+  eventItemsList: [];
+  eventVenue: string;
+  eventStatus: string;
 };
 type Response = { statuscode: number };
 

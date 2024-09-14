@@ -8,6 +8,7 @@ import {
   import { ParamListBase, TabNavigationState } from "@react-navigation/native";
   import React from "react";
 import Notification from "@/components/Notification";
+import { userInfo } from "@/api/getUserInfo";
   
   const { Navigator } = createMaterialTopTabNavigator();
   
@@ -19,6 +20,7 @@ import Notification from "@/components/Notification";
     MaterialTopTabNavigationEventMap>(Navigator);
   
   const MaterialTopTabsLayout = () => {
+    const { data } = userInfo();
     return (
       <>
       <View style={{backgroundColor:"white",borderTopWidth:1,borderTopColor:"grey"}}>
@@ -26,9 +28,9 @@ import Notification from "@/components/Notification";
           <View style={styles.container2}>
            <Notification
            KeyId = ''
-           Company = ""
-           Email = ""
-           Phone = ""
+           Company = {data?.emEventOrg}
+           Email = {data?.emEmailId}
+           Phone = {data?.emMobile}
            />
           </View>
         </View>

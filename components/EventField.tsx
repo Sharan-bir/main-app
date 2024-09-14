@@ -86,8 +86,7 @@ export default EventField;
 const styles = StyleSheet.create({
   container: {
     marginBottom: 20,
-    marginLeft: 50,
-    width: "100%", // Adjust width to ensure the component fits well
+    width: "90%", // Adjust width to ensure the component fits well
   },
   title: {
     fontSize: 16,

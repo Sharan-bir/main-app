@@ -1,3 +1,4 @@
+
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
 import React from 'react';
 import { allNotifications } from '@/api/notifications/allNotifications';
@@ -5,19 +6,19 @@ import NotificationDisplay from '@/components/NotificationDisplay';
 
 const readedNotification = () => {
   const { data } = allNotifications();
-  console.log(data)
+  
   return (
      <>
      <ScrollView>
      {data && data.length > 0 ? (
             <><View style={styles.Textcontainer}>
-            <Text style={styles.boldText}>Upcoming Events</Text>
+            <Text style={styles.boldText}></Text>
           </View><View style={styles.Eventcontainer}>
               {data.map((event) => (
                 <NotificationDisplay
                 KeyId = {event.noId}
                 title={event.noMessage}
-                date={event.noDate} />
+                status={event.noStatus} />
               ))}
             </View></>
             ):(<View></View>)}

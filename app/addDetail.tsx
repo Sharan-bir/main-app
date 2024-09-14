@@ -64,16 +64,17 @@ const addDetail = () => {
   const createEvent = async () => { 
     try {
       addEvent({ 
+        eventId:Number(),
         eventName: name,
         eventDate: eventDate?.toISOString() || "",
         eventDatetime: "",
-        paymentDate: paymentDate || "",
+        paymentDate: paymentDate?.toISOString() || "",
         customerDetails: customerDetails,
         eventItemsList: [],
         eventVenue: venue,
         eventStatus: "ONGOING"
       });
-      router.push("/addEventItem");
+      router.push("/(root)/(screen)/(menu)/eventdetail");
     } catch (error) {
       console.error("Error adding event:", error); 
     }
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    width: "90%", // Adjusted for better fit
+    width: "95%", // Adjusted for better fit
   },
   footer: {
     flexDirection: "row",

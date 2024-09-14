@@ -3,49 +3,32 @@ import React from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import Notification from "./Notification";
 
-const NotificationDisplay = ({ title,  date, KeyId }: any) => {
-  const formatDate = (timestamp: string) => {
-    const dateObj = new Date(parseInt(timestamp)); // Convert the timestamp to a Date object
-    const day = String(dateObj.getDate()).padStart(2, "0"); // Get day and ensure it's 2 digits
-    const month = String(dateObj.getMonth() + 1).padStart(2, "0"); // Get month (0-indexed, so +1)
-    const year = dateObj.getFullYear(); // Get full year
-
-    return `${day}/${month}/${year}`; // Return in "DD-MM-YYYY" format
-  };
+const NotificationDisplay = ({ title, KeyId, status }: any) => {
+  
   return (
-    <View key={KeyId} style={styles.container}>
+    <>
+  {status == "Read" ? (
+    <View key={KeyId} style={styles.container2}>
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
-        {/* <View style={styles.iconContainer}>
-          <FontAwesome
-            name="edit"
-            size={20}
-            color="black"
-            onPress={() => {
-              console.log("Edit");
-            }}
-            style={styles.icon}
-          />
-          <FontAwesome
-            name="trash"
-            size={20}
-            color="black"
-            onPress={() => {
-              console.log("Delete");
-            }}
-            style={styles.icon}
-          />
-        </View> */}
       </View>
-      <Text style={styles.bold}>{formatDate(date)}.</Text>
     </View>
+  ) : (
+    <View key={KeyId} style={styles.container1}>
+      <View style={styles.header}>
+        <Text style={styles.title}>{title}</Text>
+      </View>
+    </View>
+  )}
+</>
+
   );
 };
 
 export default NotificationDisplay;
 
 const styles = StyleSheet.create({
-  container: {
+  container1: {
     marginTop: 10,
     marginBottom: 10,
     paddingLeft: 10,
@@ -55,6 +38,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     borderColor: "#0195B5",
+    height: 80,
+    minWidth: "90%",
+  },
+  container2: {
+    marginTop: 10,
+    marginBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 10,
+    backgroundColor: "#E8E8E8",
+    borderWidth: 1,
+    borderRadius: 4,
+    borderColor: "#838383",
     height: 80,
     minWidth: "90%",
   },

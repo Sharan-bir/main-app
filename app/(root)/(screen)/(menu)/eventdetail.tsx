@@ -59,11 +59,13 @@ const eventdetail = () => {
               {data
                 .filter((event) => !isPastEvent(event.eventDate)) 
                 .map((event) => (
+
                   <UpcomingEvent
                     KeyId={event.eventId} // ---> in this id dont have any items then display a button in front of the ui
                     title={event.eventName}
                     address={event.eventVenue}
                     date={event.eventDate}
+                    item = {event.eventItemsList}
                   />
                 ))}
             </View>

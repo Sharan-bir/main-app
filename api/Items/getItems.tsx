@@ -29,7 +29,6 @@ export const getItems = createQuery<Response, Variables, AxiosError>({
       },
       signal,
     });
-    console.log(response.data);
     return response.data;
   },
 });

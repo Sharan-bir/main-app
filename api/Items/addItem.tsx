@@ -2,15 +2,15 @@ import type { AxiosError } from "axios";
 import axios from "axios";
 import { createMutation } from "react-query-kit";
 
-type Variables = {
-  itemId: number,
-  itemName: string,
-  itemType: string,
-  itemDesc: string,
-  itemCost: number,
-  itemImagePath: string,
-  itemAddFields: string,
-  imageString: string
+export type Variables = {
+  itemId: number;
+  itemName: string;
+  itemType: string;
+  itemDesc: string;
+  itemCost: number;
+  itemImagePath: string;
+  itemAddFields: string;
+  imageString: string;
 };
 type Response = { statuscode: number };
 

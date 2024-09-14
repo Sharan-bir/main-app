@@ -8,8 +8,8 @@ const GetEventId = () => {
 
   useEffect(() => {
     const fetchLastEventId = async () => {
-      const lastEvent = data[data.length - 1];
-      setLastEventId(lastEvent ? lastEvent.eventId : null);
+      const lastEvent = data?[data.length - 1]:"";
+      setLastEventId(lastEvent ? 0 : null);
     };
     fetchLastEventId();
   }, []);
