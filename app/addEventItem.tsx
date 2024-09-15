@@ -1,18 +1,29 @@
+
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import ActionButton from '@/components/ActionButton';
 import { getItems } from '@/api/Items/getItems';
-import { useGlobalSearchParams } from 'expo-router';
+import { useGlobalSearchParams, useRouter } from 'expo-router';
 import { generateQuotation } from '@/api/Events/generateQuotation';
+import { useGetEvent } from '@/api/Events/getEvent';
+import axios from "axios";
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import { Buffer } from 'buffer';
+import { useAddEventItems } from '@/api/Events/addEventItems';
 
 const AddEventItems = () => {
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [itemQuantities, setItemQuantities] = useState<{ [key: number]: number }>({});
-  
+
   // Call hooks inside the component
   const { data } = getItems(); 
   const { KeyId } = useGlobalSearchParams();
   const { mutate: addQuotation } = generateQuotation();
+  const router = useRouter();
+
+  // Adding eventItem
+  const { mutate: addEventItems } = useAddEventItems();
 
   const handleSelectItem = (item: any) => {
     setSelectedItems((prev) => {
@@ -20,11 +31,11 @@ const AddEventItems = () => {
 
       if (isItemSelected) {
         setItemQuantities((prevQuantities) => {
-          const updatedQuantities = { ...prevQuantities };
+          const updatedQuantities = {...prevQuantities };
           delete updatedQuantities[item.itemId];
           return updatedQuantities;
         });
-        return prev.filter((selectedItem) => selectedItem.itemId !== item.itemId);
+        return prev.filter((selectedItem) => selectedItem.itemId!== item.itemId);
       }
       return [...prev, item];
     });
@@ -32,7 +43,7 @@ const AddEventItems = () => {
 
   const handleQuantityChange = (itemId: number, change: number) => {
     setItemQuantities((prevQuantities) => ({
-      ...prevQuantities,
+     ...prevQuantities,
       [itemId]: Math.max(1, (prevQuantities[itemId] || 1) + change),
     }));
   };
@@ -70,31 +81,86 @@ const AddEventItems = () => {
       </TouchableOpacity>
     );
   };
-  console.log(KeyId);
-  const handleQuotation = () => {
-    selectedItems.forEach((item: any) => {
-      addQuotation(
-        {
+
+  const handleQuotation = async () => {
+    const event_url = `http://ec2-35-78-87-126.ap-northeast-1.compute.amazonaws.com:8080/event/event?eventId=${KeyId}`;
+    try {
+      const response = await axios.get(event_url);
+      console.log('useGetEvent called with keyID:', response.data);
+  
+      // Create a single event with all the selected items
+      const payload = {
+        eventId: response.data.eventId,
+        eventName: response.data.eventName,
+        eventDate: response.data.eventDate,
+        eventDatetime: response.data.eventDatetime,
+        paymentDate: response.data.paymentDate,
+        customerDetails: response.data.customerDetails,
+        eventItemsList: selectedItems.map((item) => ({
           itemId: item.itemId,
           itemName: item.itemName,
           quantity: itemQuantities[item.itemId] || 1,
           eventId: Number(KeyId),
-        },
-        {
-          onSuccess: (data: any) => {
-            console.log('Quotation generated successfully:', data);
-          },
-          onError: (error: any) => {
-            console.error('Error generating quotation:', error);
-          },
+        })),
+        eventVenue: response.data.eventVenue,
+        eventStatus: response.data.eventStatus,
+      };
+  
+      // Generate the quotation
+      const result = await axios.post('http://ec2-35-78-87-126.ap-northeast-1.compute.amazonaws.com:8080/event/generatequotation', payload, {
+        responseType: 'arraybuffer',
+      });
+  
+      // Convert ArrayBuffer to Base64
+      const base64 = Buffer.from(result.data, 'binary').toString('base64');
+  
+      // Check if the Base64 string is valid
+      if (!base64 || !/^[A-Za-z0-9+/]*={0,2}$/.test(base64)) {
+        throw new Error('Invalid Base64 string');
+      }
+  
+      const fileUri = FileSystem.documentDirectory + 'quotation.docx';
+  
+      await FileSystem.writeAsStringAsync(fileUri, base64, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+  
+      // Open the file using a compatible application
+      await FileSystem.getInfoAsync(fileUri).then((fileInfo) => {
+        if (fileInfo.exists) {
+          Sharing.shareAsync(fileUri);
+        } else {
+          console.error('File does not exist');
         }
-      );
-    });
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const SubmitEvents = () => {
-    // logic for submitting selected items
+  const SubmitEvents = async () => {
+    try {
+      console.log('KeyId:', KeyId);
+      console.log('Number(KeyId):', Number(KeyId));
+      console.log("Item selected: ", selectedItems);
+  
+      const payload = selectedItems.map((item: any) => ({
+        itemId: item.itemId,
+        itemName: item.itemName,
+        quantity: itemQuantities[item.itemId] || 1,
+        eventId: Number(KeyId)
+      }));
+  
+      console.log('Payload:', payload);
+  
+      const response = await axios.post('http://ec2-35-78-87-126.ap-northeast-1.compute.amazonaws.com:8080/event/addeventitems', payload);
+      // console.log("Item Added: ", response.data);
+      router.replace('/(root)/(screen)/(menu)/eventdetail');
+    } catch (error) {
+      console.error("Error adding event:", error);
+    }
   };
+  
 
   return (
     <View style={styles.container}>
@@ -108,7 +174,7 @@ const AddEventItems = () => {
           <View style={styles.selectedItemsBox}>
             {selectedItems.map((item) => (
               <Text key={item.itemId}>
-                {item.itemName} - {itemQuantities[item.itemId] || 1}x
+                {item.itemName} - {itemQuantities[item.itemId] || 1}
               </Text>
             ))}
           </View>

@@ -79,6 +79,7 @@ const eventdetail = () => {
                     title={event.eventName}
                     address={event.eventVenue}
                     date={event.eventDate}
+                    item = {event.eventItemsList}
                   />
                 ))}
             </View>

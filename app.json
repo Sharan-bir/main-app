@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Event-Experts",
+    "name": "Event Experts",
     "slug": "Event-Experts",
     "version": "1.0.0",
-    "scheme": "Event-Experts",
+    "scheme": "Event Experts",
     "web": {
       "bundler": "metro",
       "output": "static",

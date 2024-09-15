@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
+import { FontAwesome } from "@expo/vector-icons";
 
 const UpcomingEvent = ({ title, address, date, KeyId, item }: any) => {
   const navigation = useNavigation();
@@ -23,10 +24,31 @@ const UpcomingEvent = ({ title, address, date, KeyId, item }: any) => {
     <View key={KeyId} style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
-        { item == '' && (
+        { item == '' ? (
           <TouchableOpacity onPress={handleAddItems} style={styles.addButton}>
             <Text style={styles.addButtonText}>Add Items</Text>
           </TouchableOpacity>
+        ):(
+          <View style={styles.iconContainer}>
+          {/* <FontAwesome
+            name="edit"
+            size={20}
+            color="black"
+            onPress={() => {
+              console.log("Edit");
+            }}
+            style={styles.icon}
+          />
+          <FontAwesome
+            name="trash"
+            size={20}
+            color="black"
+            onPress={() => {
+              console.log("Delete");
+            }}
+            style={styles.icon}
+          /> */}
+        </View>
         )}
       </View>
       <Text style={{ lineHeight: 20, color: "#6e6c67", fontSize: 12 }}>
@@ -72,5 +94,11 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  icon: {
+    marginLeft: 15,
+  },
+  iconContainer: {
+    flexDirection: "row",
   },
 });

@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
 
   imageInputBtnText: {
     fontSize: 14,
-    color: '#fff',
+    color: '#000',
   },
 
   imageInputContainer: {
@@ -277,10 +277,11 @@ const styles = StyleSheet.create({
   imageInputBtn: {
     padding: 15,
     borderRadius: 15,
-    backgroundColor: '#78909c',
+    backgroundColor:'transparent',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth:1.5,
     marginBottom: 20,
     flex: 1,
     marginHorizontal: 5,
