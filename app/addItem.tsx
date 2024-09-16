@@ -124,7 +124,7 @@ const NewFormPage = () => {
           itemAddFields: '',
         });
       } else {
-        // Handle case where imageBase64 is null (e.g., show an error message)
+        
         console.log('Image not selected!');
       }
 

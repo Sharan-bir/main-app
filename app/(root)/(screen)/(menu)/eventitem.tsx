@@ -7,6 +7,7 @@ import {
   Text,
   ScrollView,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { images } from "@/constants";
@@ -66,6 +67,14 @@ const eventitem = () => {
       const link = `${baseUrl}/${hash}/${showCost}`;
 
       await Clipboard.setStringAsync(link);
+      Alert.alert(
+        "Successful", 
+        `Copy to Clipboard `, // Message in the alert
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: true } // Allow dismissal by tapping outside
+      );
       console.log("Link copied to clipboard:", link);
     } catch (error) {
       console.error("Error fetching hash or copying to clipboard:", error);

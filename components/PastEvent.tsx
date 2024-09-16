@@ -15,16 +15,7 @@ const PastEvent = ({ title, address, date, KeyId }: any) => {
     <View key={KeyId} style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
-        {/* <View style={styles.iconContainer}>
-          <FontAwesome
-            name="edit"
-            size={20}
-            color="black"
-            onPress={() => {
-              console.log("Edit");
-            }}
-            style={styles.icon}
-          />
+        {/*
           <FontAwesome
             name="trash"
             size={20}

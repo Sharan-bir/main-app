@@ -13,7 +13,7 @@ import 'react-native-reanimated';
 export { ErrorBoundary } from 'expo-router';
 
 export const unstable_settings = {
-  initialRouteName: '/addDetails',
+  initialRouteName: '/(auth)/sign-in',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -60,6 +60,7 @@ function RootLayoutNav() {
           <Stack.Screen name="notification" options={{ headerShown: false }} />
           <Stack.Screen name="addDetail" options={{ headerShown: false }} />
           <Stack.Screen name="addItem" options={{ headerShown: false }} />
+          <Stack.Screen name="drawer" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
       </AuthProvider>

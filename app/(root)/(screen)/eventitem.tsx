@@ -7,6 +7,7 @@ import {
   Text,
   ScrollView,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { images } from "@/constants";
@@ -20,6 +21,7 @@ import { getHash } from "@/api/userHashItems/getHash";
 import * as Clipboard from "expo-clipboard";
 import { useDebounce } from "@/hooks/useDebounce";
 import { CommonActions } from "@react-navigation/native";
+import AutoCloseModal from "@/components/AutoCloseModal";
 
 const eventitem = () => {
   const [search, setSearch] = useState("");
@@ -43,12 +45,7 @@ const eventitem = () => {
   const navigation = useNavigation();
 
   const handleBackPress = () => {
-    // Navigate back to the drawer screen (or specify your target route)
-    navigation.dispatch(
-      CommonActions.navigate({
-        name: "(menu)", // Replace with your actual drawer screen name
-      })
-    );
+    router.push('/drawer');
   };
 
   const toggleSwitch = () => {
@@ -77,6 +74,14 @@ const eventitem = () => {
       const link = `${baseUrl}/${hash}/${showCost}`;
 
       await Clipboard.setStringAsync(link);
+      Alert.alert(
+        "Successful", 
+        `Copy to Clipboard `, // Message in the alert
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: true } // Allow dismissal by tapping outside
+      );
       console.log("Link copied to clipboard:", link);
     } catch (error) {
       console.error("Error fetching hash or copying to clipboard:", error);

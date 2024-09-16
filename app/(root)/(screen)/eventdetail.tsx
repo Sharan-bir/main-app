@@ -25,12 +25,7 @@ const eventdetail = () => {
     router.push("/addDetail");
   };
   const handleBackPress = () => {
-    // Navigate back to the drawer screen (or specify your target route)
-    navigation.dispatch(
-      CommonActions.navigate({
-        name: "(menu)", // Replace with your actual drawer screen name
-      })
-    );
+   router.push('/drawer');
   };
   // Current date
   const currentDate = new Date();

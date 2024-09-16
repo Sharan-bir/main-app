@@ -17,11 +17,13 @@ import { allNotifications } from "@/api/notifications/allNotifications";
 
 const DrawerLayout = () => {
   const navigation = useNavigation();
+  const router = useRouter();
 
   const onToggle = () => {
-    navigation.dispatch(DrawerActions.openDrawer());
+    router.push('/drawer');
+    
   };
-  const router = useRouter();
+  
   
   const onBellPress = () => {
     router.push(
@@ -30,7 +32,7 @@ const DrawerLayout = () => {
   };
   const { data } = allNotifications();
   const unreadCount = data?.filter(notification => notification.noStatus == "Unread").length;
- 
+
 
   return (
     <>
