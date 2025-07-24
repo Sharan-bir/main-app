@@ -1,0 +1,89 @@
+import { useState, useCallback } from "react";
+import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react";
+import "@livekit/components-styles";
+import SimpleVoiceAssistant from "./SimpleVoiceAssistant";
+
+const LiveKitModal = ({ setShowSupport }) => {
+  const [isSubmittingName, setIsSubmittingName] = useState(true);
+  const [name, setName] = useState("");
+  const [token, setToken] = useState(null);
+
+  const getToken = useCallback(async (userName) => {
+  try {
+    const response = await fetch(`http://localhost:8000/token`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        identity: userName,
+        
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch token");
+    }
+
+    const data = await response.json(); // this gets { token, server_url }
+    setToken(data.token);
+    setIsSubmittingName(false);
+  } catch (error) {
+    console.error(error);
+  }
+}, []);
+
+
+  const handleNameSubmit = (e) => {
+    e.preventDefault();
+    if (name.trim()) {
+      getToken(name);
+    }
+  };
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="support-room">
+          {isSubmittingName ? (
+            <form onSubmit={handleNameSubmit} className="name-form">
+              <h2>Enter your name to connect</h2>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name"
+                required
+              />
+              <button type="submit">Connect</button>
+              <button
+                type="button"
+                className="cancel-button"
+                onClick={() => setShowSupport(false)}
+              >
+                Cancel
+              </button>
+            </form>
+          ) : token ? (
+            <LiveKitRoom
+              serverUrl={import.meta.env.VITE_LIVEKIT_URL}
+              token={token}
+              connect={true}
+              video={false}
+              audio={true}
+              onDisconnected={() => {
+                setShowSupport(false);
+                setIsSubmittingName(true);
+              }}
+            >
+              <RoomAudioRenderer />
+              <SimpleVoiceAssistant />
+            </LiveKitRoom>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LiveKitModal;
